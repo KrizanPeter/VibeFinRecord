@@ -36,10 +36,11 @@ ASP.NET Core Identity is used **exclusively** for authentication concerns (crede
 
 - Provider: **ASP.NET Core Identity**
 - Token format: **JWT (Bearer token)**
+- Refresh token storage: **ASP.NET Identity `UserTokens` table** via `UserManager.SetAuthenticationTokenAsync` / `GetAuthenticationTokenAsync`. Token name: `RefreshToken`; provider name: `FinClaude`. Stored hashed.
 - Features in scope:
   - Register (email + password) → also creates a linked `Account` (see §4.1)
   - Login (returns JWT containing `AccountId`)
-  - Refresh token
+  - Refresh token (rotate on use — old token invalidated, new token issued)
 - Features **out of scope** (MVP):
   - Roles and permissions
   - Social login (Google, Apple, etc.)
@@ -214,6 +215,10 @@ A target value that the user wants an Asset or Asset Group to reach by a specifi
 3. User picks snapshot periodicity: `Monthly` | `Quarterly` | `Yearly`.
 4. `Account` record is updated with these values.
 
+**Post-setup field edit rules** (applies to `PUT /api/v1/account` after setup is complete):
+- `Currency` — editable freely at any time. Only affects display formatting; does not affect historical values.
+- `SnapshotStartDate` and `SnapshotPeriodicity` — **locked** once any `Snapshot` exists for the account. Attempting to change them after the first snapshot returns `409 Conflict`. If no snapshots exist yet, they can be changed freely.
+
 ### 5.4 Snapshot Gap Detection (automatic, post-login)
 After every login the backend calculates which snapshot dates are expected but missing:
 
@@ -229,6 +234,11 @@ If `missingSnapshotDates` is not empty, the app **blocks navigation** and requir
 2. For each asset, the user enters the current value.
 3. User submits. A Snapshot + AssetSnapshots are created for the target date.
 4. If filling in multiple missing snapshots, the flow repeats for each date.
+
+**Snapshot date validation rules:**
+- The submitted date must appear in the missing-dates list returned by gap detection. Dates that are not expected (not matching the periodicity schedule) are rejected with `400 Bad Request`.
+- Future dates are rejected with `400 Bad Request` (gap detection never produces future dates, so this is a client-side guard).
+- A date for which a `Snapshot` already exists is rejected with `409 Conflict`.
 
 ### 5.6 Manage Assets (CRUD)
 - Create, read, update, and delete Assets.
@@ -272,7 +282,7 @@ If the target day doesn't exist in a month, clamp to the last day of that month 
 - All endpoints require Bearer JWT except `/auth/register` and `/auth/login`
 - Base path: `/api/v1/`
 - Error responses follow RFC 9457 Problem Details format
-- Pagination on list endpoints (cursor-based or offset)
+- Pagination on list endpoints: **offset-based** (`?page=1&pageSize=20`). Response envelope: `{ items: [...], totalCount, page, pageSize }`.
 
 ### Endpoints
 
@@ -528,6 +538,25 @@ public interface IStep<TContext>
 
 A `TContext` object is a mutable bag that carries the command input and accumulates output (e.g., the newly created entity's ID) across steps.
 
+**Query step result propagation:** Query context objects carry a typed `Result` property that the final step populates. The handler reads it after chain execution:
+
+```csharp
+public class GetAssetContext
+{
+    public GetAssetQuery Query { get; }
+    public AssetDto? Result { get; set; }  // populated by the final query step
+
+    public GetAssetContext(GetAssetQuery query) => Query = query;
+}
+
+// In the handler — after chain.ExecuteAsync:
+var result = await chain.ExecuteAsync(context, ct);
+if (result.IsError) return result.Errors;
+return context.Result!;
+```
+
+This keeps the step interface uniform (`IStep<TContext>` always returns `ErrorOr<Success>`) for both command and query chains.
+
 **All steps inherit from `BaseStep<TContext>` and call `NextAsync` to continue the chain:**
 
 ```csharp
@@ -694,3 +723,10 @@ Rules:
 - **Asset soft-delete**: ✅ Resolved — soft-deleted assets are excluded from future snapshot forms but their `AssetSnapshot` records are always included in historical net worth calculations. History is never rewritten.
 - **Goal linked to deleted asset/group**: ✅ Resolved — when an Asset or AssetGroup is soft-deleted, all Goals linked to it are cascade soft-deleted automatically. No orphaned or broken goal state to handle in the UI.
 - **Multiple missing snapshots**: ✅ Resolved — enforced. If missing snapshots exist the user must fill all of them before accessing the rest of the app. Gaps in the timeline corrupt net worth trends and goal progress calculations.
+- **Refresh token storage**: ✅ Resolved — stored in ASP.NET Identity `UserTokens` table via `UserManager`. Tokens are rotated on use. See §3.
+- **Account setup field editability**: ✅ Resolved — `Currency` is freely editable. `SnapshotStartDate` and `SnapshotPeriodicity` are locked once any `Snapshot` exists (409 on attempt). See §5.3.
+- **Snapshot date validation**: ✅ Resolved — only dates in the gap-detection missing list are accepted; future dates → 400; duplicate dates → 409. See §5.5.
+- **Pagination strategy**: ✅ Resolved — offset-based pagination (`?page=1&pageSize=20`) on all list endpoints. See §7.
+- **Query step result propagation**: ✅ Resolved — query contexts carry a typed `Result` property populated by the final step; handler reads it after chain execution. See §11.4.
+- **Goal progress with no snapshots**: ✅ Resolved — return `currentValue: null` and `progressPercent: null` in the DTO when no snapshot data exists yet.
+- **AssetGroupMembership on asset soft-delete**: ✅ Resolved — when an Asset is soft-deleted, its `AssetGroupMembership` rows are hard-deleted (cascade delete configured in EF). The join table has no soft-delete.

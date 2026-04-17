@@ -7,10 +7,10 @@
 | Phase | Tasks | Done |
 |-------|-------|------|
 | 1 — Backend Foundation | 7 | 0 |
-| 2 — Backend Features | 8 | 0 |
+| 2 — Backend Features | 7 | 0 |
 | 3 — Mobile Foundation | 4 | 0 |
 | 4 — Mobile Screens | 7 | 0 |
-| 5 — Testing | 2 | 0 |
+| 5 — Testing | 3 | 0 |
 
 ---
 
@@ -34,6 +34,9 @@ Key packages:
 - `Microsoft.AspNetCore.Identity.EntityFrameworkCore` (Infrastructure)
 - `Microsoft.AspNetCore.Authentication.JwtBearer` (Api)
 - `Serilog.AspNetCore` (Api)
+- `xunit`, `Moq`, `FluentAssertions` (FinClaude.Unit.Tests — also scaffold this project here)
+
+Also scaffold `FinClaude.Unit.Tests` xUnit project with these packages as part of this task.
 
 **Dependencies:** None
 
@@ -270,21 +273,6 @@ Progress calculation: latest snapshot value for linked asset/group ÷ target val
 
 ---
 
-### TASK-15 — Backend Integration Tests Setup
-
-**Description:** Set up `FinClaude.Integration.Tests` project using `WebApplicationFactory`.
-
-- Test database: real SQLite (in-memory or temp file per test run)
-- Auth helpers: generate valid JWTs for test accounts
-- Seed helpers: create test accounts, assets, groups
-- Verify: `AccountId` scoping (no cross-account data leakage), soft-delete filter, guard middleware returns 403 correctly
-
-**Dependencies:** TASK-08, TASK-09, TASK-10, TASK-11, TASK-13, TASK-14
-
-**Status:** Waiting
-
----
-
 ## Phase 3 — Mobile Foundation
 
 ---
@@ -478,6 +466,21 @@ Used both from Snapshot Gate (TASK-22) and as a standalone "Add Snapshot" action
 
 ---
 
+### TASK-15 — Backend Integration Tests Setup
+
+**Description:** Set up `FinClaude.Integration.Tests` project using `WebApplicationFactory`.
+
+- Test database: real SQLite (in-memory or temp file per test run)
+- Auth helpers: generate valid JWTs for test accounts
+- Seed helpers: create test accounts, assets, groups
+- Verify: `AccountId` scoping (no cross-account data leakage), soft-delete filter, guard middleware returns 403 correctly
+
+**Dependencies:** TASK-08, TASK-09, TASK-10, TASK-11, TASK-13, TASK-14
+
+**Status:** Waiting
+
+---
+
 ### TASK-27 — Backend Unit Tests (Steps + Handlers)
 
 **Description:** Implement unit tests in `FinClaude.Unit.Tests` targeting steps and handlers.
@@ -511,4 +514,4 @@ Coverage:
 
 ---
 
-*Last updated: 2026-04-18*
+*Last updated: 2026-04-18 — all pre-implementation decisions resolved; TASK-15 moved to Phase 5*
