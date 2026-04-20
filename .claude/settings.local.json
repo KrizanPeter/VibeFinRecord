@@ -12,7 +12,9 @@
       "Bash(dotnet sln add *)",
       "Bash(dotnet add *)",
       "Bash(dotnet build *)",
-      "Bash(dotnet ef migrations *)"
+      "Bash(dotnet ef migrations *)",
+      "Bash(git rm *)",
+      "Bash(git commit -m ' *)"
     ]
   }
 }
