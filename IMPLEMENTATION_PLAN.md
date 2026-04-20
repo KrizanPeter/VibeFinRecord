@@ -2,12 +2,12 @@
 
 ## Progress
 
-**9 / 31 tasks completed**
+**11 / 31 tasks completed**
 
 | Phase | Tasks | Done |
 |-------|-------|------|
 | 1 — Backend Foundation | 7 | 7 |
-| 2 — Backend Features | 8 | 2 |
+| 2 — Backend Features | 8 | 4 |
 | 3 — Mobile Foundation | 4 | 0 |
 | 4 — Mobile Screens | 9 | 0 |
 | 5 — Testing | 3 | 0 |
@@ -205,7 +205,7 @@ Steps per command: Validate → Authorize (account owns asset) → Domain logic 
 
 **Dependencies:** TASK-03, TASK-06, TASK-07
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -219,7 +219,7 @@ Endpoints: `GET /api/v1/groups`, `POST /api/v1/groups`, `GET /api/v1/groups/{id}
 
 **Dependencies:** TASK-03, TASK-06, TASK-07, TASK-10
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 

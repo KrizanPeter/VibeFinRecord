@@ -1,0 +1,28 @@
+# Build output
+bin/
+obj/
+
+# .NET
+*.user
+*.suo
+.vs/
+*.userprefs
+
+# Rider/VS Code
+.idea/
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Secrets / env
+appsettings.Development.json
+*.env
+.env
+
+# Node / mobile
+node_modules/
+mobile/.expo/
+mobile/android/
+mobile/ios/

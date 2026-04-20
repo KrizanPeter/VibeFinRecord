@@ -18,6 +18,26 @@ using FinClaude.Infrastructure.Features.Auth.Login.Steps;
 using FinClaude.Infrastructure.Features.Account.Commands;
 using FinClaude.Infrastructure.Features.Account.Commands.Steps;
 using FinClaude.Infrastructure.Features.Account.Queries;
+using FinClaude.Application.Features.Assets.Commands.CreateAsset;
+using FinClaude.Application.Features.Assets.Commands.UpdateAsset;
+using FinClaude.Application.Features.Assets.Commands.DeleteAsset;
+using FinClaude.Application.Features.Assets.DTOs;
+using FinClaude.Application.Features.Assets.Queries.ListAssets;
+using FinClaude.Application.Features.Assets.Queries.GetAsset;
+using FinClaude.Infrastructure.Features.Assets.Commands;
+using FinClaude.Infrastructure.Features.Assets.Commands.Steps;
+using FinClaude.Infrastructure.Features.Assets.Queries;
+using FinClaude.Application.Features.Groups.Commands.CreateGroup;
+using FinClaude.Application.Features.Groups.Commands.UpdateGroup;
+using FinClaude.Application.Features.Groups.Commands.DeleteGroup;
+using FinClaude.Application.Features.Groups.Commands.AddGroupMember;
+using FinClaude.Application.Features.Groups.Commands.RemoveGroupMember;
+using FinClaude.Application.Features.Groups.DTOs;
+using FinClaude.Application.Features.Groups.Queries.ListGroups;
+using FinClaude.Application.Features.Groups.Queries.GetGroup;
+using FinClaude.Infrastructure.Features.Groups.Commands;
+using FinClaude.Infrastructure.Features.Groups.Commands.Steps;
+using FinClaude.Infrastructure.Features.Groups.Queries;
 using FinClaude.Infrastructure.Features.Auth.Refresh;
 using FinClaude.Infrastructure.Features.Auth.Refresh.Steps;
 using FinClaude.Infrastructure.Features.Auth.Register;
@@ -98,6 +118,44 @@ public static class DependencyInjection
             });
 
         services.AddAuthorization();
+
+        // Assets
+        services.AddTransient<IQueryHandler<ListAssetsQuery, List<AssetResponse>>, ListAssetsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetAssetQuery, AssetResponse>, GetAssetQueryHandler>();
+        services.AddTransient<ValidateCreateAssetStep>();
+        services.AddTransient<PersistCreateAssetStep>();
+        services.AddTransient<IChainProvider<CreateAssetContext>, CreateAssetChainProvider>();
+        services.AddTransient<ICommandHandler<CreateAssetCommand, AssetResponse>, CreateAssetCommandHandler>();
+        services.AddTransient<ValidateUpdateAssetStep>();
+        services.AddTransient<AuthorizeAndLoadAssetStep>();
+        services.AddTransient<PersistUpdateAssetStep>();
+        services.AddTransient<IChainProvider<UpdateAssetContext>, UpdateAssetChainProvider>();
+        services.AddTransient<ICommandHandler<UpdateAssetCommand, AssetResponse>, UpdateAssetCommandHandler>();
+        services.AddTransient<AuthorizeAndDeleteAssetStep>();
+        services.AddTransient<IChainProvider<DeleteAssetContext>, DeleteAssetChainProvider>();
+        services.AddTransient<ICommandHandler<DeleteAssetCommand>, DeleteAssetCommandHandler>();
+
+        // Groups
+        services.AddTransient<IQueryHandler<ListGroupsQuery, List<AssetGroupResponse>>, ListGroupsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetGroupQuery, AssetGroupDetailResponse>, GetGroupQueryHandler>();
+        services.AddTransient<ValidateCreateGroupStep>();
+        services.AddTransient<PersistCreateGroupStep>();
+        services.AddTransient<IChainProvider<CreateGroupContext>, CreateGroupChainProvider>();
+        services.AddTransient<ICommandHandler<CreateGroupCommand, AssetGroupResponse>, CreateGroupCommandHandler>();
+        services.AddTransient<ValidateUpdateGroupStep>();
+        services.AddTransient<AuthorizeAndLoadGroupStep>();
+        services.AddTransient<PersistUpdateGroupStep>();
+        services.AddTransient<IChainProvider<UpdateGroupContext>, UpdateGroupChainProvider>();
+        services.AddTransient<ICommandHandler<UpdateGroupCommand, AssetGroupResponse>, UpdateGroupCommandHandler>();
+        services.AddTransient<AuthorizeAndDeleteGroupStep>();
+        services.AddTransient<IChainProvider<DeleteGroupContext>, DeleteGroupChainProvider>();
+        services.AddTransient<ICommandHandler<DeleteGroupCommand>, DeleteGroupCommandHandler>();
+        services.AddTransient<ValidateAndPersistAddMemberStep>();
+        services.AddTransient<IChainProvider<AddGroupMemberContext>, AddGroupMemberChainProvider>();
+        services.AddTransient<ICommandHandler<AddGroupMemberCommand>, AddGroupMemberCommandHandler>();
+        services.AddTransient<AuthorizeAndRemoveMemberStep>();
+        services.AddTransient<IChainProvider<RemoveGroupMemberContext>, RemoveGroupMemberChainProvider>();
+        services.AddTransient<ICommandHandler<RemoveGroupMemberCommand>, RemoveGroupMemberCommandHandler>();
 
         return services;
     }
