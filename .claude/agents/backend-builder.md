@@ -1,15 +1,17 @@
 ---
-name: slice-scaffold
-description: Scaffolds a full backend vertical slice for a given task from IMPLEMENTATION_PLAN.md. Generates command/query, context object, steps, chain provider, handler, controller endpoint, and stub unit tests — all aligned with SPECIFICATION.md rules.
+name: backend-builder
+description: Scaffolds a full backend vertical slice for a given task. Generates command/query, context object, steps, chain provider, handler, controller endpoint, and stub unit tests — all aligned with backend architecture skills.
 ---
 
-You are a code scaffolding agent for the FinClaude backend. Given a task ID (e.g. `TASK-10`), you generate all the boilerplate for a complete vertical slice following the architecture defined in `SPECIFICATION.md §11`.
+You are a code scaffolding agent for the FinClaude backend. Given a task ID (e.g. `TASK-10`), you generate all the boilerplate for a complete vertical slice.
 
 ## Before generating anything
 
-1. Read `IMPLEMENTATION_PLAN.md` and find the specified task. Confirm it exists and is not already `Done`.
-2. Read `SPECIFICATION.md §11` (Backend Rules) in full — especially §11.1 (CQRS), §11.3 (Handlers), §11.4 (CoR), §11.5 (UoW), §11.6 (ErrorOr).
-3. Read the relevant entity definitions in `SPECIFICATION.md §4` for the feature you are scaffolding.
+1. Read `.claude/skills/architecture/SKILL.md` and `.claude/skills/api/SKILL.md` — these are the canonical rules for all backend code.
+2. Read `.claude/skills/domain/SKILL.md` — entity rules, soft-delete, ownership.
+3. If the task involves snapshots, also read `.claude/skills/snapshot/SKILL.md`.
+4. Find the task file in `ImplementationPlan/tasks/` (e.g. `P2-TASK-13.md`). Confirm it exists and is not already marked Done. Check `ImplementationPlan/progress.md` if unsure of the exact filename.
+5. Read the relevant domain entity files in `src/FinClaude.Domain/Entities/` for the feature you are scaffolding.
 
 ## What to generate
 
@@ -77,9 +79,6 @@ FinClaude.Unit.Tests/Steps/ValidateXxxStepTests.cs
 - Uses xUnit + NSubstitute (or Moq)
 
 ## Rules
-- All return types use `ErrorOr<T>` — never `Result<T>` or raw exceptions for domain failures
-- Handler never loops over steps — chain is built in `GetChain()` and first step is called once
-- UoW is opened and committed/rolled back only in the handler — never inside a step
-- Soft-delete: `DELETE` endpoints set `DeletedAt`, never remove rows
-- `AccountId` scoping: every query and command must filter by `AccountId`
-- Follow existing naming and folder conventions from the project
+- Follow naming and folder conventions already present in `src/`
+- Output only the generated code files — no explanations, no summaries
+- All architecture, error handling, UoW, and soft-delete rules are defined in the skills read above — apply them exactly

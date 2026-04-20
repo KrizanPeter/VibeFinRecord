@@ -16,6 +16,7 @@ public static class ErrorOrExtensions
             ErrorType.Validation => new UnprocessableEntityObjectResult(ToProblemDetails(error, 422)),
             ErrorType.NotFound   => new NotFoundObjectResult(ToProblemDetails(error, 404)),
             ErrorType.Conflict   => new ConflictObjectResult(ToProblemDetails(error, 409)),
+            ErrorType.Failure    => new BadRequestObjectResult(ToProblemDetails(error, 400)),
             _                    => new ObjectResult(ToProblemDetails(error, 500)) { StatusCode = 500 },
         };
     }

@@ -2,12 +2,12 @@
 
 ## Progress
 
-**11 / 31 tasks completed**
+**12 / 31 tasks completed**
 
 | Phase | Tasks | Done |
 |-------|-------|------|
 | 1 — Backend Foundation | 7 | 7 |
-| 2 — Backend Features | 8 | 4 |
+| 2 — Backend Features | 8 | 5 |
 | 3 — Mobile Foundation | 4 | 0 |
 | 4 — Mobile Screens | 9 | 0 |
 | 5 — Testing | 3 | 0 |
@@ -235,7 +235,7 @@ Endpoints: `GET /api/v1/groups`, `POST /api/v1/groups`, `GET /api/v1/groups/{id}
 
 **Dependencies:** TASK-03, TASK-06, TASK-07, TASK-09
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 

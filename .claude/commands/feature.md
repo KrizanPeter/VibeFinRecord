@@ -1,66 +1,64 @@
-You are running the **Feature Discovery Interview** for FinClaude. Your goal is to gather enough information about a new feature to fully specify it and decompose it into implementation tasks.
+You are running the **Feature Discovery Interview** for FinClaude. Gather enough information to fully specify a new feature and decompose it into tasks.
 
 ## Before you start
 
-Read both files silently (do not summarise them to the user):
-1. `SPECIFICATION.md` — understand what is already specified so you can ask informed questions and avoid duplicating existing features
-2. `IMPLEMENTATION_PLAN.md` — understand what tasks already exist and what phases are in use
+Read silently:
+1. `SPECIFICATION.md` — avoid duplicating existing features
+2. `ImplementationPlan/progress.md` — existing tasks and status
+3. `ImplementationPlan/dependencies.md` — dependency graph for placing new tasks
 
-If the user already described a feature in their `/feature` invocation message, use that as your starting point and skip questions that are already answered.
+Only open a specific task file if `dependencies.md` is insufficient to determine connections.
 
-## Interview structure
+Use any description in the `/feature` message as your starting point.
 
-Conduct the interview in **two rounds**. Ask each round's questions together in a single message — never one question at a time. Be conversational, not robotic.
+## Interview — two rounds
+
+Ask each round as a single message.
 
 ### Round 1 — Business context
-
-Ask the user:
-1. What is the feature? (One-sentence description if not already given.)
-2. What user problem does it solve? Why do they need it?
-3. Walk me through the user journey — what triggers this feature, what do they do, what happens at the end?
-4. What does success look like? What can the user do after this feature exists that they couldn't do before?
-5. Are there any explicit non-goals or constraints you already know about?
+1. What is the feature?
+2. What user problem does it solve?
+3. Walk me through the user journey — trigger, actions, outcome.
+4. What does success look like?
+5. Any known non-goals or constraints?
 
 ### Round 2 — Technical context
 
-After receiving Round 1 answers, ask relevant technical questions. Tailor these to what the feature actually implies — skip questions that are obviously not applicable:
-
-- Does this require new data? (New entities, or new fields on existing ones?)
-- Does it require new API endpoints, or changes to existing ones?
-- Does it require new mobile screens, or changes to existing screens?
-- Which existing features does it depend on? (Reference IMPLEMENTATION_PLAN.md task IDs where relevant.)
-- Does it affect any existing behavior in a way that could be a breaking change?
-- What validation rules or business constraints apply?
-- What happens in edge cases? (e.g. linked data is deleted, no data exists yet, concurrent actions)
+Ask only what applies:
+- New data required? (entities or fields)
+- New or changed API endpoints?
+- New or changed mobile screens?
+- Which existing tasks does it depend on?
+- Breaking changes to existing behavior?
+- Validation rules or business constraints?
+- Edge cases?
 
 ## After the interview
 
-Once you have enough information (you decide — one or two rounds is usually sufficient), do the following:
-
 **1. Summarise**
 
-Present a clear, structured summary of what you understood:
-
 ```
-**Feature:** [name]
-**Problem it solves:** ...
-**User journey:** ...
-**Data model changes:** ...
-**New endpoints:** ...
-**New screens:** ...
-**Dependencies on existing tasks:** ...
-**Validation / business rules:** ...
-**Edge cases:** ...
-**Known non-goals / out of scope:** ...
+Feature: [name]
+Problem: ...
+User journey: ...
+Data model changes: ...
+New endpoints: ...
+New screens: ...
+Dependencies: ...
+Validation / business rules: ...
+Edge cases: ...
+Out of scope: ...
 ```
 
-Then ask: *"Is this summary accurate? Shall I proceed to update SPECIFICATION.md and IMPLEMENTATION_PLAN.md?"*
+Ask: *"Is this accurate? Shall I proceed?"*
 
-**2. Only after the user confirms**, spawn the `analytic-consultant` agent with this brief as its input. Include the full summary above in the agent prompt so it has everything it needs — it cannot ask follow-up questions.
+**2. On confirmation**, spawn `analytic-consultant` with the full summary. The agent produces exactly:
+1. New task file — `ImplementationPlan/tasks/<Px-TASK-NN>.md`
+2. Updated `ImplementationPlan/progress.md` — new row, status `Waiting`
+3. Updated `ImplementationPlan/dependencies.md` — new entry in correct phase block
 
 ## Rules
-- Do not modify SPECIFICATION.md or IMPLEMENTATION_PLAN.md yourself — the `analytic-consultant` agent does that
-- Do not proceed to documentation without explicit user confirmation of the summary
-- Ask follow-up questions if any answer is too vague to specify — ambiguity now becomes a broken spec later
-- Do not suggest implementation approaches; stay focused on requirements
-- If the user describes a feature that already exists in SPECIFICATION.md, tell them clearly and stop
+- Do not modify any files yourself — `analytic-consultant` does that
+- No confirmation = no action
+- If the feature already exists in SPECIFICATION.md, say so and stop
+

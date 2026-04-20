@@ -38,8 +38,26 @@ using FinClaude.Application.Features.Groups.Queries.GetGroup;
 using FinClaude.Infrastructure.Features.Groups.Commands;
 using FinClaude.Infrastructure.Features.Groups.Commands.Steps;
 using FinClaude.Infrastructure.Features.Groups.Queries;
+using FinClaude.Application.Common.DTOs;
+using FinClaude.Application.Features.Snapshots.Commands.SubmitSnapshot;
+using FinClaude.Application.Features.Snapshots.DTOs;
+using FinClaude.Application.Features.Snapshots.Queries.GetSnapshot;
+using FinClaude.Application.Features.Snapshots.Queries.GetSnapshotStatus;
+using FinClaude.Application.Features.Snapshots.Queries.ListSnapshots;
 using FinClaude.Infrastructure.Features.Auth.Refresh;
 using FinClaude.Infrastructure.Features.Auth.Refresh.Steps;
+using FinClaude.Infrastructure.Features.Snapshots.Commands;
+using FinClaude.Infrastructure.Features.Snapshots.Commands.Steps;
+using FinClaude.Infrastructure.Features.Snapshots.Queries;
+using FinClaude.Application.Features.Goals.Commands.CreateGoal;
+using FinClaude.Application.Features.Goals.Commands.UpdateGoal;
+using FinClaude.Application.Features.Goals.Commands.DeleteGoal;
+using FinClaude.Application.Features.Goals.DTOs;
+using FinClaude.Application.Features.Goals.Queries.ListGoals;
+using FinClaude.Application.Features.Goals.Queries.GetGoal;
+using FinClaude.Infrastructure.Features.Goals.Commands;
+using FinClaude.Infrastructure.Features.Goals.Commands.Steps;
+using FinClaude.Infrastructure.Features.Goals.Queries;
 using FinClaude.Infrastructure.Features.Auth.Register;
 using FinClaude.Infrastructure.Features.Auth.Register.Steps;
 using FinClaude.Infrastructure.Persistence;
@@ -156,6 +174,33 @@ public static class DependencyInjection
         services.AddTransient<AuthorizeAndRemoveMemberStep>();
         services.AddTransient<IChainProvider<RemoveGroupMemberContext>, RemoveGroupMemberChainProvider>();
         services.AddTransient<ICommandHandler<RemoveGroupMemberCommand>, RemoveGroupMemberCommandHandler>();
+
+        // Snapshots
+        services.AddTransient<IQueryHandler<GetSnapshotStatusQuery, SnapshotStatusResponse>, GetSnapshotStatusQueryHandler>();
+        services.AddTransient<IQueryHandler<ListSnapshotsQuery, PagedResponse<SnapshotSummaryResponse>>, ListSnapshotsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetSnapshotQuery, SnapshotDetailResponse>, GetSnapshotQueryHandler>();
+        services.AddTransient<ValidateSnapshotSubmitStep>();
+        services.AddTransient<PersistSnapshotStep>();
+        services.AddTransient<IChainProvider<SubmitSnapshotContext>, SubmitSnapshotChainProvider>();
+        services.AddTransient<ICommandHandler<SubmitSnapshotCommand, SnapshotDetailResponse>, SubmitSnapshotCommandHandler>();
+
+        // Goals
+        services.AddTransient<IQueryHandler<ListGoalsQuery, List<GoalResponse>>, ListGoalsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetGoalQuery, GoalResponse>, GetGoalQueryHandler>();
+        services.AddTransient<ValidateCreateGoalStep>();
+        services.AddTransient<AuthorizeLinkedEntityForCreateStep>();
+        services.AddTransient<PersistCreateGoalStep>();
+        services.AddTransient<IChainProvider<CreateGoalContext>, CreateGoalChainProvider>();
+        services.AddTransient<ICommandHandler<CreateGoalCommand, GoalResponse>, CreateGoalCommandHandler>();
+        services.AddTransient<ValidateUpdateGoalStep>();
+        services.AddTransient<AuthorizeAndLoadGoalStep>();
+        services.AddTransient<AuthorizeLinkedEntityForUpdateStep>();
+        services.AddTransient<PersistUpdateGoalStep>();
+        services.AddTransient<IChainProvider<UpdateGoalContext>, UpdateGoalChainProvider>();
+        services.AddTransient<ICommandHandler<UpdateGoalCommand, GoalResponse>, UpdateGoalCommandHandler>();
+        services.AddTransient<AuthorizeAndDeleteGoalStep>();
+        services.AddTransient<IChainProvider<DeleteGoalContext>, DeleteGoalChainProvider>();
+        services.AddTransient<ICommandHandler<DeleteGoalCommand>, DeleteGoalCommandHandler>();
 
         return services;
     }

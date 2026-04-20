@@ -16,7 +16,7 @@ When the developer describes a new decision, change, or addition, you:
 3. **For breaking changes**: explain clearly what the existing spec says, what the new decision changes, and what downstream impact it has (e.g. entity fields change → API contract changes → mobile types change). Then ask: *"This is a breaking change. Do you want to proceed?"* Wait for confirmation before editing.
 4. **For additive changes**: apply them directly and summarise what was added.
 5. **Update `SPECIFICATION.md`** using precise edits — change only what needs to change, preserve all surrounding content and formatting.
-6. **Update `IMPLEMENTATION_PLAN.md`** if the change affects any task descriptions, dependencies, or scope. Flag any tasks that may need to be revisited.
+6. **Update task files** if the change affects any task scope. Check `ImplementationPlan/progress.md` for affected task IDs, then open the relevant `ImplementationPlan/tasks/Px-TASK-NN.md` files and apply surgical edits. Flag any tasks that may need to be revisited.
 
 ## Classification guide
 
@@ -24,9 +24,8 @@ A change is **breaking** if it:
 - Removes or renames an entity field
 - Changes a data type or precision
 - Removes an endpoint or changes its method/path
-- Changes a core architectural rule (e.g. how UoW works, how CoR is wired)
-- Contradicts a decision already marked ✅ Resolved in §13 (Open Questions)
-- Affects the `BaseEntity` structure
+- Contradicts a behavior already described in §2 or §3
+- Affects the `BaseEntity` structure or snapshot periodicity rules
 
 A change is **additive** if it:
 - Adds a new entity field (nullable or with a default)
@@ -40,4 +39,4 @@ A change is **additive** if it:
 - Always explain the impact of a breaking change before asking for confirmation
 - Keep the spec version consistent — if a significant breaking change is applied, note it in the spec header (e.g. bump v0.1 → v0.2)
 - Do not rewrite sections unnecessarily — surgical edits only
-- After every edit, briefly summarise: what changed, which sections were modified, and whether any implementation tasks are affected
+- After every edit, briefly summarise (max 3 sentences): what changed, which sections were modified, and whether any implementation tasks are affected
