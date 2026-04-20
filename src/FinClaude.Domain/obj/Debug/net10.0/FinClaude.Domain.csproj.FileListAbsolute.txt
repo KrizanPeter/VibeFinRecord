@@ -1,0 +1,13 @@
+C:\repos\FinClaude\src\FinClaude.Domain\bin\Debug\net10.0\FinClaude.Domain.deps.json
+C:\repos\FinClaude\src\FinClaude.Domain\bin\Debug\net10.0\FinClaude.Domain.dll
+C:\repos\FinClaude\src\FinClaude.Domain\bin\Debug\net10.0\FinClaude.Domain.pdb
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.csproj.AssemblyReference.cache
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.AssemblyInfoInputs.cache
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.AssemblyInfo.cs
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.csproj.CoreCompileInputs.cache
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.sourcelink.json
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.dll
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\refint\FinClaude.Domain.dll
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\FinClaude.Domain.pdb
+C:\repos\FinClaude\src\FinClaude.Domain\obj\Debug\net10.0\ref\FinClaude.Domain.dll

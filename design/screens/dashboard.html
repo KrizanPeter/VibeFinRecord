@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinClaude — Dashboard</title>
+<link rel="stylesheet" href="../assets/phone.css" />
+<style>
+  .ti { width: 22px; height: 22px; }
+
+  /* ── Chart card ── */
+  .chart-card {
+    margin: 0 16px 14px;
+    background: white;
+    border: 1px solid var(--ink-100);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-xs);
+  }
+  .chart-card-header {
+    padding: 14px 16px 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .chart-card-header .name { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+  .chart-card-header .source { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
+  .chart-preview { padding: 0 16px 14px; }
+  .chart-card-footer {
+    padding: 10px 16px;
+    background: var(--ink-50);
+    border-top: 1px solid var(--ink-100);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    color: var(--ink-500);
+  }
+  .chart-card-footer .val {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--ink-900);
+    font-size: 13px;
+  }
+
+  /* ── Add-chart wizard ── */
+  .source-toggle {
+    display: flex;
+    background: var(--ink-100);
+    border-radius: var(--r-pill);
+    padding: 4px;
+    margin: 0 20px 16px;
+  }
+  .source-toggle .pill {
+    flex: 1; padding: 10px; text-align: center;
+    font-size: 14px; font-weight: 600; color: var(--ink-500);
+    border-radius: var(--r-pill); cursor: pointer;
+  }
+  .source-toggle .pill.active {
+    background: white; color: var(--ink-900); box-shadow: var(--shadow-xs);
+  }
+
+  .pick-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 13px 20px; border-bottom: 1px solid var(--ink-100); cursor: pointer;
+  }
+  .pick-row .left { display: flex; gap: 12px; align-items: center; }
+  .pick-row .icon {
+    width: 36px; height: 36px; border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px; color: white;
+  }
+  .pick-row .info .name { font-weight: 600; font-size: 14px; }
+  .pick-row .info .sub  { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
+  .pick-row.selected { background: var(--brand-50); }
+  .radio-dot {
+    width: 20px; height: 20px; border-radius: var(--r-pill);
+    border: 2px solid var(--ink-300); flex-shrink: 0; position: relative;
+  }
+  .pick-row.selected .radio-dot { border-color: var(--brand-500); background: var(--brand-500); }
+  .pick-row.selected .radio-dot::after {
+    content: ''; position: absolute; top: 3px; left: 3px;
+    width: 10px; height: 10px; background: white; border-radius: var(--r-pill);
+  }
+
+  .section-label {
+    padding: 14px 20px 6px;
+    font-size: 11px; font-weight: 700; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--ink-500);
+  }
+  .type-options {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px; padding: 0 20px 4px;
+  }
+  .type-opt {
+    border: 2px solid var(--ink-200); border-radius: var(--r-md);
+    padding: 12px 8px; display: flex; flex-direction: column;
+    align-items: center; gap: 6px; cursor: pointer;
+  }
+  .type-opt.active { border-color: var(--brand-500); background: var(--brand-50); }
+  .type-opt svg { color: var(--ink-500); }
+  .type-opt.active svg { color: var(--brand-600); }
+  .type-opt .lbl { font-size: 12px; font-weight: 600; color: var(--ink-600); }
+  .type-opt.active .lbl { color: var(--brand-700); }
+
+  /* ── Chart detail ── */
+  .detail-header {
+    padding: 16px 20px 14px; border-bottom: 1px solid var(--ink-100);
+  }
+  .detail-header .sub { font-size: 12px; color: var(--ink-500); }
+  .detail-header h1 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; margin-top: 2px; }
+  .detail-header .current {
+    font-size: 30px; font-weight: 800; letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums; margin-top: 10px;
+  }
+  .detail-header .delta { font-size: 13px; font-weight: 600; color: var(--brand-600); margin-top: 2px; }
+
+  .range-tabs { display: flex; border-bottom: 1px solid var(--ink-100); }
+  .range-tab {
+    flex: 1; padding: 10px 0; text-align: center;
+    font-size: 13px; font-weight: 600; color: var(--ink-500);
+  }
+  .range-tab.active { color: var(--brand-600); border-bottom: 2px solid var(--brand-500); }
+
+  .stat-row {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px; background: var(--ink-100); border-top: 1px solid var(--ink-100);
+  }
+  .stat-cell { background: white; padding: 14px 16px; text-align: center; }
+  .stat-cell .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--ink-500); font-weight: 600; }
+  .stat-cell .val { font-size: 15px; font-weight: 700; letter-spacing: -0.01em; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Dashboard — custom charts</h1>
+  <p>TASK-27 · User-created charts per Asset (line/bar) or Asset Group (line/bar/pie)</p>
+</div>
+
+<div class="phones">
+
+  <!-- ── FRAME 1: Dashboard home ── -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen" style="background:var(--bg)">
+      <div class="nav-header">
+        <div class="title">Dashboard</div>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+
+      <!-- Net-worth strip -->
+      <div style="background:linear-gradient(135deg,#125639,#1F8A5E);color:white;padding:16px 20px 18px;display:flex;justify-content:space-between;align-items:flex-end">
+        <div>
+          <div style="font-size:11px;letter-spacing:0.08em;text-transform:uppercase;opacity:0.8;font-weight:600">Net worth</div>
+          <div style="font-size:28px;font-weight:800;letter-spacing:-0.03em;margin-top:2px;font-variant-numeric:tabular-nums">€184,240.50</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:12px;opacity:0.75">1 Apr 2026</div>
+          <div style="font-size:13px;font-weight:600;margin-top:2px">↑ 3.2% MoM</div>
+        </div>
+      </div>
+
+      <div style="padding:16px 16px 8px;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink-500)">My charts</div>
+
+      <!-- Line chart card -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="name">VWCE ETF — value</div><div class="source">Asset · VWCE ETF · Degiro</div></div>
+          <span class="chip neutral">Line</span>
+        </div>
+        <div class="chart-preview">
+          <svg viewBox="0 0 320 72" width="100%" height="72" preserveAspectRatio="none">
+            <defs>
+              <linearGradient id="lg1" x1="0" x2="0" y1="0" y2="1">
+                <stop offset="0%" stop-color="#1F8A5E" stop-opacity="0.2"/>
+                <stop offset="100%" stop-color="#1F8A5E" stop-opacity="0"/>
+              </linearGradient>
+            </defs>
+            <path d="M0,60 L40,54 L80,48 L120,44 L160,36 L200,40 L240,26 L280,22 L320,14 L320,72 L0,72Z" fill="url(#lg1)"/>
+            <path d="M0,60 L40,54 L80,48 L120,44 L160,36 L200,40 L240,26 L280,22 L320,14" fill="none" stroke="#1F8A5E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            <circle cx="320" cy="14" r="4" fill="white" stroke="#1F8A5E" stroke-width="2.5"/>
+          </svg>
+        </div>
+        <div class="chart-card-footer">
+          <span>12 snapshots · monthly</span>
+          <span class="val">€42,180.00</span>
+        </div>
+      </div>
+
+      <!-- Bar chart card -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="name">Retirement — growth</div><div class="source">Group · Retirement</div></div>
+          <span class="chip neutral">Bar</span>
+        </div>
+        <div class="chart-preview">
+          <svg viewBox="0 0 320 72" width="100%" height="72">
+            <rect x="6"   y="50" width="20" height="22" rx="3" fill="#D6EADD"/>
+            <rect x="34"  y="44" width="20" height="28" rx="3" fill="#AED5BB"/>
+            <rect x="62"  y="38" width="20" height="34" rx="3" fill="#7EBD97"/>
+            <rect x="90"  y="33" width="20" height="39" rx="3" fill="#4EA277"/>
+            <rect x="118" y="29" width="20" height="43" rx="3" fill="#4EA277"/>
+            <rect x="146" y="24" width="20" height="48" rx="3" fill="#1F8A5E"/>
+            <rect x="174" y="20" width="20" height="52" rx="3" fill="#1F8A5E"/>
+            <rect x="202" y="16" width="20" height="56" rx="3" fill="#186E4B"/>
+            <rect x="230" y="11" width="20" height="61" rx="3" fill="#125639"/>
+            <rect x="258" y="6"  width="20" height="66" rx="3" fill="#125639"/>
+          </svg>
+        </div>
+        <div class="chart-card-footer">
+          <span>10 snapshots · monthly</span>
+          <span class="val">€83,420.00</span>
+        </div>
+      </div>
+
+      <!-- Pie chart card -->
+      <div class="chart-card">
+        <div class="chart-card-header">
+          <div><div class="name">Emergency fund — split</div><div class="source">Group · Emergency fund</div></div>
+          <span class="chip neutral">Pie</span>
+        </div>
+        <div class="chart-preview" style="display:flex;gap:16px;align-items:center;padding:4px 0 8px">
+          <svg viewBox="0 0 80 80" width="80" height="80" style="flex-shrink:0">
+            <circle cx="40" cy="40" r="30" fill="none" stroke="#3A7BD5" stroke-width="20" stroke-dasharray="150 188" stroke-dashoffset="0" transform="rotate(-90 40 40)"/>
+            <circle cx="40" cy="40" r="30" fill="none" stroke="#7E6BD1" stroke-width="20" stroke-dasharray="38 188" stroke-dashoffset="-150" transform="rotate(-90 40 40)"/>
+            <circle cx="40" cy="40" r="20" fill="white"/>
+          </svg>
+          <div style="flex:1;display:flex;flex-direction:column;gap:8px">
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:10px;height:10px;border-radius:2px;background:#3A7BD5;flex-shrink:0"></div>
+              <div style="font-size:12px"><div style="font-weight:600">Raiffeisen</div><div style="color:var(--ink-500)">€12,400 · 80%</div></div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <div style="width:10px;height:10px;border-radius:2px;background:#7E6BD1;flex-shrink:0"></div>
+              <div style="font-size:12px"><div style="font-weight:600">Revolut</div><div style="color:var(--ink-500)">€3,120 · 20%</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-card-footer">
+          <span>Latest snapshot · 1 Apr 2026</span>
+          <span class="val">€15,520.50</span>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="fab" aria-label="Add chart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+
+    <div class="tab-bar">
+      <div class="tab active">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Dashboard</span>
+      </div>
+      <div class="tab">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V7l6-4 6 4v14"/><path d="M15 12h6v9"/></svg>
+        <span>Assets</span>
+      </div>
+      <div class="tab">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/></svg>
+        <span>Groups</span>
+      </div>
+      <div class="tab">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+        <span>Goals</span>
+      </div>
+    </div>
+    <span class="phone-label">Dashboard home</span>
+  </div>
+
+  <!-- ── FRAME 2: Add-chart wizard ── -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen">
+      <div class="nav-header">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+        </button>
+        <div class="title" style="font-size:16px">New chart</div>
+        <div style="width:36px"></div>
+      </div>
+
+      <div class="section-label" style="padding-top:16px">Data source</div>
+      <div class="source-toggle">
+        <div class="pill">Asset</div>
+        <div class="pill active">Group</div>
+      </div>
+
+      <div class="pick-row selected">
+        <div class="left">
+          <div class="icon" style="background:#1F8A5E">RT</div>
+          <div class="info"><div class="name">Retirement</div><div class="sub">3 assets · €83,420</div></div>
+        </div>
+        <div class="radio-dot"></div>
+      </div>
+      <div class="pick-row">
+        <div class="left">
+          <div class="icon" style="background:#3A7BD5">EF</div>
+          <div class="info"><div class="name">Emergency fund</div><div class="sub">2 assets · €15,520</div></div>
+        </div>
+        <div class="radio-dot"></div>
+      </div>
+
+      <div class="section-label">Chart type</div>
+      <div class="type-options">
+        <div class="type-opt">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polyline points="3 17 9 11 13 15 21 7"/></svg>
+          <div class="lbl">Line</div>
+        </div>
+        <div class="type-opt">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="12" width="4" height="9"/><rect x="10" y="8" width="4" height="13"/><rect x="17" y="4" width="4" height="17"/></svg>
+          <div class="lbl">Bar</div>
+        </div>
+        <div class="type-opt active">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21.21 15.89A10 10 0 118 2.83"/><path d="M22 12A10 10 0 0012 2v10z"/></svg>
+          <div class="lbl">Pie</div>
+        </div>
+      </div>
+
+      <div style="padding:10px 20px 6px">
+        <div style="background:#FEF3E0;border:1px solid #E9A53D;border-radius:var(--r-md);padding:10px 12px;font-size:12px;color:#7A5010;line-height:1.5">
+          <strong>Pie</strong> shows asset distribution within the group at the latest snapshot. Only available for Groups — not for individual Assets.
+        </div>
+      </div>
+
+      <div class="section-label">Chart name</div>
+      <div style="padding:0 20px">
+        <div class="field" style="margin-bottom:0">
+          <input value="Retirement — split" style="font-size:15px" />
+        </div>
+      </div>
+
+      <div style="padding:20px;margin-top:auto">
+        <button class="btn btn-primary btn-block btn-lg">Add to dashboard</button>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px">Cancel</button>
+      </div>
+    </div>
+    <span class="phone-label">Add chart</span>
+  </div>
+
+  <!-- ── FRAME 3: Chart detail — line ── -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen" style="background:white">
+      <div class="nav-header">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="title" style="font-size:16px">VWCE ETF — value</div>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+        </button>
+      </div>
+
+      <div class="detail-header">
+        <div class="sub">Asset · VWCE ETF · Degiro</div>
+        <div class="current">€42,180.00</div>
+        <div class="delta">↑ €870.00 (2.1%) vs last snapshot</div>
+      </div>
+
+      <div class="range-tabs">
+        <div class="range-tab">3M</div>
+        <div class="range-tab">6M</div>
+        <div class="range-tab active">1Y</div>
+        <div class="range-tab">All</div>
+      </div>
+
+      <div style="padding:8px 16px 0">
+        <svg viewBox="0 0 350 155" width="100%" height="155" preserveAspectRatio="none" style="display:block">
+          <defs>
+            <linearGradient id="lg2" x1="0" x2="0" y1="0" y2="1">
+              <stop offset="0%" stop-color="#1F8A5E" stop-opacity="0.18"/>
+              <stop offset="100%" stop-color="#1F8A5E" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <line x1="0" y1="38"  x2="350" y2="38"  stroke="#EEF1F4" stroke-width="1"/>
+          <line x1="0" y1="76"  x2="350" y2="76"  stroke="#EEF1F4" stroke-width="1"/>
+          <line x1="0" y1="114" x2="350" y2="114" stroke="#EEF1F4" stroke-width="1"/>
+          <path d="M0,126 L32,118 L64,110 L96,104 L128,96 L160,86 L192,92 L224,72 L256,64 L288,54 L320,42 L350,32 L350,155 L0,155Z" fill="url(#lg2)"/>
+          <path d="M0,126 L32,118 L64,110 L96,104 L128,96 L160,86 L192,92 L224,72 L256,64 L288,54 L320,42 L350,32" fill="none" stroke="#1F8A5E" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="350" cy="32" r="5" fill="white" stroke="#1F8A5E" stroke-width="2.5"/>
+          <text x="0"   y="150" font-size="9" fill="#9099A7" text-anchor="middle" font-family="Inter,sans-serif">Apr</text>
+          <text x="64"  y="150" font-size="9" fill="#9099A7" text-anchor="middle" font-family="Inter,sans-serif">Jun</text>
+          <text x="128" y="150" font-size="9" fill="#9099A7" text-anchor="middle" font-family="Inter,sans-serif">Aug</text>
+          <text x="192" y="150" font-size="9" fill="#9099A7" text-anchor="middle" font-family="Inter,sans-serif">Oct</text>
+          <text x="256" y="150" font-size="9" fill="#9099A7" text-anchor="middle" font-family="Inter,sans-serif">Dec</text>
+          <text x="320" y="150" font-size="9" fill="#9099A7" text-anchor="middle" font-family="Inter,sans-serif">Feb</text>
+          <text x="350" y="150" font-size="9" fill="#1F8A5E" font-weight="600" text-anchor="middle" font-family="Inter,sans-serif">Apr</text>
+        </svg>
+      </div>
+
+      <div class="stat-row">
+        <div class="stat-cell">
+          <div class="lbl">Start</div>
+          <div class="val">€35,200</div>
+        </div>
+        <div class="stat-cell">
+          <div class="lbl">Change</div>
+          <div class="val" style="color:var(--brand-600)">+19.8%</div>
+        </div>
+        <div class="stat-cell">
+          <div class="lbl">Snapshots</div>
+          <div class="val">12</div>
+        </div>
+      </div>
+
+      <div style="padding:20px;display:flex;gap:10px">
+        <button class="btn btn-secondary" style="flex:1">Edit</button>
+        <button class="btn btn-danger" style="flex:1">Remove</button>
+      </div>
+    </div>
+    <span class="phone-label">Chart detail (line)</span>
+  </div>
+
+</div>
+</body>
+</html>

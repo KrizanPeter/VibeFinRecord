@@ -2,14 +2,14 @@
 
 ## Progress
 
-**0 / 28 tasks completed**
+**9 / 31 tasks completed**
 
 | Phase | Tasks | Done |
 |-------|-------|------|
-| 1 — Backend Foundation | 7 | 0 |
-| 2 — Backend Features | 7 | 0 |
+| 1 — Backend Foundation | 7 | 7 |
+| 2 — Backend Features | 8 | 2 |
 | 3 — Mobile Foundation | 4 | 0 |
-| 4 — Mobile Screens | 7 | 0 |
+| 4 — Mobile Screens | 9 | 0 |
 | 5 — Testing | 3 | 0 |
 
 ---
@@ -40,7 +40,7 @@ Also scaffold `FinClaude.Unit.Tests` xUnit project with these packages as part o
 
 **Dependencies:** None
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -48,7 +48,7 @@ Also scaffold `FinClaude.Unit.Tests` xUnit project with these packages as part o
 
 **Description:** Implement `BaseEntity` and all six domain entities in `FinClaude.Domain`.
 
-Entities: `Account`, `Asset`, `AssetGroup`, `AssetGroupMembership`, `Snapshot`, `AssetSnapshot`, `Goal`
+Entities: `Account`, `Asset`, `AssetGroup`, `AssetGroupMembership`, `Snapshot`, `AssetSnapshot`, `Goal`, `DashboardChart`
 
 Each entity extending `BaseEntity` gets: `Id`, `CreatedAt`, `UpdatedAt`, `DeletedAt`, `IsDeleted`.
 
@@ -56,7 +56,7 @@ Financial decimal fields (`AssetSnapshot.Value`, `Goal.TargetValue`) must be `de
 
 **Dependencies:** TASK-01
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -78,7 +78,7 @@ Base classes:
 
 **Dependencies:** TASK-01
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -95,7 +95,7 @@ Base classes:
 
 **Dependencies:** TASK-02
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -111,7 +111,7 @@ Base classes:
 
 **Dependencies:** TASK-04
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -127,7 +127,7 @@ Base classes:
 
 **Dependencies:** TASK-04
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -146,7 +146,7 @@ Base classes:
 
 **Dependencies:** TASK-05
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -173,7 +173,7 @@ Base classes:
 
 **Dependencies:** TASK-05, TASK-06
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -189,7 +189,7 @@ Steps for PUT: Validate → Persist
 
 **Dependencies:** TASK-03, TASK-06, TASK-07
 
-**Status:** Waiting
+**Status:** Done
 
 ---
 
@@ -199,7 +199,7 @@ Steps for PUT: Validate → Persist
 
 Endpoints: `GET /api/v1/assets`, `POST /api/v1/assets`, `GET /api/v1/assets/{id}`, `PUT /api/v1/assets/{id}`, `DELETE /api/v1/assets/{id}`
 
-`DELETE` triggers soft-delete on the Asset and cascade soft-delete on all Goals linked to it.
+`DELETE` triggers soft-delete on the Asset and cascade soft-delete on all Goals and DashboardCharts linked to it.
 
 Steps per command: Validate → Authorize (account owns asset) → Domain logic → Persist
 
@@ -215,7 +215,7 @@ Steps per command: Validate → Authorize (account owns asset) → Domain logic 
 
 Endpoints: `GET /api/v1/groups`, `POST /api/v1/groups`, `GET /api/v1/groups/{id}`, `PUT /api/v1/groups/{id}`, `DELETE /api/v1/groups/{id}`, `POST /api/v1/groups/{id}/assets`, `DELETE /api/v1/groups/{id}/assets/{assetId}`
 
-`DELETE /api/v1/groups/{id}` triggers soft-delete on the group and cascade soft-delete on all Goals linked to it.
+`DELETE /api/v1/groups/{id}` triggers soft-delete on the group and cascade soft-delete on all Goals and DashboardCharts linked to it.
 
 **Dependencies:** TASK-03, TASK-06, TASK-07, TASK-10
 
@@ -266,6 +266,37 @@ Goal must link to exactly one of: Asset or AssetGroup (validated in steps).
 Progress calculation: latest snapshot value for linked asset/group ÷ target value × 100%.
 
 `GET /api/v1/goals` and `GET /api/v1/goals/{id}` include current progress in the response.
+
+**Dependencies:** TASK-03, TASK-06, TASK-07, TASK-10, TASK-11, TASK-13
+
+**Status:** Waiting
+
+---
+
+### TASK-29 — DashboardChart Feature (CRUD + Data)
+
+**Description:** Implement the full DashboardChart feature in `FinClaude.Api`.
+
+Endpoints:
+- `GET /api/v1/dashboard/charts` — list all active charts for the account, ordered by `CreatedAt` ascending
+- `POST /api/v1/dashboard/charts` — create a chart; `Pie` + `SourceType = Asset` → 400; exactly one of `AssetId`/`GroupId` required → 400
+- `GET /api/v1/dashboard/charts/{id}` — get chart configuration
+- `PUT /api/v1/dashboard/charts/{id}` — update name or chart type (Pie constraint enforced)
+- `DELETE /api/v1/dashboard/charts/{id}` — soft-delete
+- `GET /api/v1/dashboard/charts/{id}/data` — computed data points; `?range=3m|6m|1y|all` (default `all`)
+
+Data computation rules (at query time; no pre-computed cache in MVP):
+
+| ChartType | SourceType | Data |
+|-----------|------------|------|
+| Line / Bar | Asset | Time series of `AssetSnapshot.Value` for the asset, ascending by `SnapshotDate` |
+| Line / Bar | AssetGroup | Sum of `AssetSnapshot.Value` for all Group assets per `SnapshotDate`, ascending |
+| Pie | AssetGroup | Each Asset's value as share of Group total at the **latest** `SnapshotDate` |
+
+- Soft-deleted Assets excluded from Group aggregation going forward; historical values preserved.
+- No snapshot data → `200 OK` with `{ dataPoints: [] }`.
+
+Steps for POST/PUT: Validate → Authorize → Domain logic → Persist
 
 **Dependencies:** TASK-03, TASK-06, TASK-07, TASK-10, TASK-11, TASK-13
 
@@ -341,6 +372,7 @@ Root
     ├── Account Setup (wizard, shown when isSetupComplete = false)
     ├── Snapshot Gate (blocks until all missing snapshots filled)
     └── Bottom Tab Navigator
+        ├── Dashboard   ← home tab; net-worth strip + user chart cards
         ├── Assets
         ├── Groups
         └── Goals
@@ -462,6 +494,44 @@ Used both from Snapshot Gate (TASK-22) and as a standalone "Add Snapshot" action
 
 ---
 
+### TASK-30 — Dashboard Screen + Add Chart Wizard
+
+**Description:** Implement the Dashboard home tab and the Add Chart wizard.
+
+**Dashboard screen:**
+- Net-worth strip: total value from latest snapshot + delta vs. previous snapshot
+- Scrollable list of chart cards — each shows: mini chart preview, source name, chart type chip, latest value
+- TanStack Query for `GET /api/v1/dashboard/charts` + per-card `GET /api/v1/dashboard/charts/{id}/data`
+- Empty state when no charts exist, prompting user to add the first chart
+- FAB to launch Add Chart wizard
+
+**Add Chart wizard** (4 steps, stack navigation):
+1. Select source type: Asset or Asset Group
+2. Select specific Asset or Group from a list
+3. Select chart type (`Pie` only offered when source is a Group)
+4. Set chart name (pre-filled with sensible default). Submit → `POST /api/v1/dashboard/charts`
+
+**Dependencies:** TASK-19, TASK-29, TASK-24, TASK-25
+
+**Status:** Waiting
+
+---
+
+### TASK-31 — Chart Detail Screen
+
+**Description:** Implement the full Chart Detail screen reached by tapping a chart card on the Dashboard.
+
+- Full-size chart rendered from `GET /api/v1/dashboard/charts/{id}/data`
+- Range selector tabs: 3M / 6M / 1Y / All — re-fetches with `?range=` via TanStack Query
+- Edit action: update chart name or type (client-side Pie constraint enforced before submit)
+- Delete action: soft-delete with confirmation dialog; navigates back to Dashboard on success
+
+**Dependencies:** TASK-30
+
+**Status:** Waiting
+
+---
+
 ## Phase 5 — Testing
 
 ---
@@ -514,4 +584,4 @@ Coverage:
 
 ---
 
-*Last updated: 2026-04-18 — all pre-implementation decisions resolved; TASK-15 moved to Phase 5*
+*Last updated: 2026-04-19 — added TASK-29 (DashboardChart backend), TASK-30 (Dashboard screen + Add Chart wizard), TASK-31 (Chart Detail screen); updated TASK-02 entity list, TASK-10/11 cascades, TASK-19 navigation to reflect SPECIFICATION.md v0.2*

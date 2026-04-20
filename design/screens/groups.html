@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinClaude — Groups screens</title>
+<link rel="stylesheet" href="../assets/phone.css" />
+<style>
+  .ti { width: 22px; height: 22px; }
+
+  .group-card {
+    margin: 12px 20px;
+    border-radius: var(--r-lg);
+    overflow: hidden;
+    border: 1px solid var(--ink-100);
+    background: white;
+    box-shadow: var(--shadow-xs);
+  }
+  .group-head {
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .group-head .left { display: flex; align-items: center; gap: 12px; }
+  .group-head .swatch {
+    width: 40px; height: 40px;
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-weight: 700; font-size: 13px;
+  }
+  .group-head .name { font-weight: 700; font-size: 16px; letter-spacing: -0.01em; }
+  .group-head .meta { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
+
+  .group-body {
+    padding: 14px 18px 18px;
+    border-top: 1px solid var(--ink-100);
+    background: var(--ink-50);
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+  .group-body .total { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.02em; }
+  .group-body .label { font-size: 11px; color: var(--ink-500); letter-spacing: 0.06em; text-transform: uppercase; font-weight: 600; }
+  .group-body .chg { font-size: 13px; color: var(--brand-600); font-weight: 600; margin-top: 4px; }
+
+  .avatar-stack {
+    display: flex;
+  }
+  .avatar-stack .pip {
+    width: 28px; height: 28px;
+    border-radius: var(--r-pill);
+    border: 2px solid white;
+    margin-left: -8px;
+    display: flex; align-items: center; justify-content: center;
+    color: white; font-size: 10px; font-weight: 700;
+  }
+  .avatar-stack .pip:first-child { margin-left: 0; }
+
+  /* Group detail */
+  .member-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--ink-100);
+  }
+  .member-row .left { display: flex; gap: 12px; align-items: center; }
+  .member-row .icon {
+    width: 36px; height: 36px;
+    border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 12px;
+    color: white;
+  }
+  .member-row .info .name { font-weight: 600; font-size: 14px; }
+  .member-row .info .inst { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
+  .member-row .val { font-family: var(--font-mono); font-weight: 600; font-size: 14px; }
+
+  .selectable .check {
+    width: 22px; height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--ink-300);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .selectable.checked .check {
+    background: var(--brand-500);
+    border-color: var(--brand-500);
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Groups — list, detail, form</h1>
+  <p>TASK-25 · Aggregated tracking across labels</p>
+</div>
+
+<div class="phones">
+
+  <!-- GROUPS LIST -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen" style="background:var(--bg)">
+      <div class="nav-header">
+        <div class="title">Groups</div>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+      </div>
+
+      <div style="padding:20px 20px 4px;font-size:13px;color:var(--ink-500)">
+        Group assets under a common label for aggregated tracking.
+      </div>
+
+      <div class="group-card">
+        <div class="group-head">
+          <div class="left">
+            <div class="swatch" style="background:#1F8A5E">RT</div>
+            <div>
+              <div class="name">Retirement</div>
+              <div class="meta">3 assets · VWCE, Pillar II, Pension</div>
+            </div>
+          </div>
+          <div class="avatar-stack">
+            <div class="pip" style="background:#1F8A5E">VW</div>
+            <div class="pip" style="background:#E9A53D">P2</div>
+            <div class="pip" style="background:#4A5765">+1</div>
+          </div>
+        </div>
+        <div class="group-body">
+          <div>
+            <div class="label">Combined value</div>
+            <div class="total">€83,420.00</div>
+            <div class="chg">↑ 1.4% vs last snapshot</div>
+          </div>
+          <span class="chip">Goal linked</span>
+        </div>
+      </div>
+
+      <div class="group-card">
+        <div class="group-head">
+          <div class="left">
+            <div class="swatch" style="background:#3A7BD5">EF</div>
+            <div>
+              <div class="name">Emergency fund</div>
+              <div class="meta">2 assets · Raiffeisen, Revolut</div>
+            </div>
+          </div>
+          <div class="avatar-stack">
+            <div class="pip" style="background:#3A7BD5">RS</div>
+            <div class="pip" style="background:#7E6BD1">RP</div>
+          </div>
+        </div>
+        <div class="group-body">
+          <div>
+            <div class="label">Combined value</div>
+            <div class="total">€15,520.50</div>
+            <div class="chg" style="color:var(--ink-500)">— no change</div>
+          </div>
+          <span class="chip">Goal linked</span>
+        </div>
+      </div>
+
+      <div class="group-card" style="border:1px dashed var(--ink-300);background:transparent;box-shadow:none">
+        <div style="padding:28px 18px;text-align:center;color:var(--ink-500);font-size:14px;">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="margin-bottom:6px"><path d="M12 5v14M5 12h14"/></svg>
+          <div style="font-weight:600;color:var(--ink-700)">Create another group</div>
+          <div style="margin-top:4px">e.g. "Kids' savings", "Travel fund"</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="fab">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+
+    <div class="tab-bar">
+      <div class="tab">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V7l6-4 6 4v14"/><path d="M15 12h6v9"/></svg>
+        <span>Assets</span>
+      </div>
+      <div class="tab active">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/></svg>
+        <span>Groups</span>
+      </div>
+      <div class="tab">
+        <svg class="ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+        <span>Goals</span>
+      </div>
+    </div>
+
+    <span class="phone-label">Groups list</span>
+  </div>
+
+  <!-- GROUP DETAIL -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen">
+      <div class="nav-header">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="title" style="font-size:16px">Retirement</div>
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="19" r="1.5"/></svg>
+        </button>
+      </div>
+
+      <div style="padding:20px;background:linear-gradient(135deg,var(--brand-50),white);border-bottom:1px solid var(--ink-100)">
+        <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-500);font-weight:600">Combined value</div>
+        <div style="font-size:30px;font-weight:800;letter-spacing:-0.02em;font-variant-numeric:tabular-nums;margin-top:4px">€83,420.00</div>
+        <div style="color:var(--brand-600);font-weight:600;font-size:14px;margin-top:2px">↑ €1,160.00 (1.4%) MoM</div>
+        <div class="mt-3" style="display:flex;gap:8px">
+          <span class="chip">Goal linked: Retirement nest egg</span>
+        </div>
+      </div>
+
+      <div style="padding:14px 20px;display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:13px;color:var(--ink-500);font-weight:600;text-transform:uppercase;letter-spacing:0.06em">3 members</div>
+        <button class="btn btn-ghost" style="padding:6px 12px;font-size:13px">Manage ›</button>
+      </div>
+
+      <div class="member-row">
+        <div class="left">
+          <div class="icon" style="background:#1F8A5E">VW</div>
+          <div class="info"><div class="name">VWCE ETF</div><div class="inst">Degiro · broker</div></div>
+        </div>
+        <div class="val">€42,180.00</div>
+      </div>
+      <div class="member-row">
+        <div class="left">
+          <div class="icon" style="background:#E9A53D">P2</div>
+          <div class="info"><div class="name">Pension II Pillar</div><div class="inst">Allianz</div></div>
+        </div>
+        <div class="val">€18,760.00</div>
+      </div>
+      <div class="member-row">
+        <div class="left">
+          <div class="icon" style="background:#4A5765">P3</div>
+          <div class="info"><div class="name">Pension III Pillar</div><div class="inst">NN Group</div></div>
+        </div>
+        <div class="val">€22,480.00</div>
+      </div>
+
+      <div style="padding:20px;display:flex;gap:10px">
+        <button class="btn btn-secondary" style="flex:1">Edit</button>
+        <button class="btn btn-danger" style="flex:1">Delete group</button>
+      </div>
+    </div>
+    <span class="phone-label">Group detail</span>
+  </div>
+
+  <!-- GROUP FORM / MEMBERSHIP -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen">
+      <div class="nav-header">
+        <button class="icon-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M6 18L18 6"/></svg>
+        </button>
+        <div class="title" style="font-size:16px">New group</div>
+        <div style="width:36px"></div>
+      </div>
+
+      <div style="padding:20px">
+        <div class="field">
+          <label>Group name</label>
+          <input value="Kids' savings" />
+        </div>
+
+        <div class="field">
+          <label>Color</label>
+          <div style="display:flex;gap:10px;margin-top:4px">
+            <div style="width:36px;height:36px;border-radius:999px;background:#1F8A5E;border:3px solid white;box-shadow:0 0 0 2px #1F8A5E"></div>
+            <div style="width:36px;height:36px;border-radius:999px;background:#3A7BD5"></div>
+            <div style="width:36px;height:36px;border-radius:999px;background:#E9A53D"></div>
+            <div style="width:36px;height:36px;border-radius:999px;background:#E26B5C"></div>
+            <div style="width:36px;height:36px;border-radius:999px;background:#7E6BD1"></div>
+            <div style="width:36px;height:36px;border-radius:999px;background:#4A5765"></div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px">
+          <div style="font-size:11px;letter-spacing:0.06em;text-transform:uppercase;color:var(--ink-500);font-weight:700;margin-bottom:8px">Members</div>
+        </div>
+      </div>
+
+      <div class="member-row selectable checked">
+        <div class="left">
+          <div class="icon" style="background:#1F8A5E">JS</div>
+          <div class="info"><div class="name">Junior Savings</div><div class="inst">Raiffeisen</div></div>
+        </div>
+        <div class="check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+      <div class="member-row selectable checked">
+        <div class="left">
+          <div class="icon" style="background:#3A7BD5">JE</div>
+          <div class="info"><div class="name">Junior ETF</div><div class="inst">XTB</div></div>
+        </div>
+        <div class="check">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+      </div>
+      <div class="member-row selectable">
+        <div class="left">
+          <div class="icon" style="background:#7E6BD1">RP</div>
+          <div class="info"><div class="name">Revolut Pocket</div><div class="inst">Revolut</div></div>
+        </div>
+        <div class="check"></div>
+      </div>
+      <div class="member-row selectable">
+        <div class="left">
+          <div class="icon" style="background:#E26B5C">CB</div>
+          <div class="info"><div class="name">Crypto wallet</div><div class="inst">Ledger</div></div>
+        </div>
+        <div class="check"></div>
+      </div>
+
+      <div style="padding:20px;margin-top:auto">
+        <button class="btn btn-primary btn-block btn-lg">Create group</button>
+      </div>
+    </div>
+    <span class="phone-label">New / Edit group</span>
+  </div>
+
+</div>
+
+</body>
+</html>

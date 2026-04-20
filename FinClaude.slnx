@@ -1,0 +1,11 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/FinClaude.Api/FinClaude.Api.csproj" />
+    <Project Path="src/FinClaude.Application/FinClaude.Application.csproj" />
+    <Project Path="src/FinClaude.Domain/FinClaude.Domain.csproj" />
+    <Project Path="src/FinClaude.Infrastructure/FinClaude.Infrastructure.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/FinClaude.Unit.Tests/FinClaude.Unit.Tests.csproj" />
+  </Folder>
+</Solution>

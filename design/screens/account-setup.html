@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinClaude — Account setup</title>
+<link rel="stylesheet" href="../assets/phone.css" />
+<style>
+  .setup {
+    flex: 1;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .step-indicator {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 32px;
+  }
+  .step-indicator .dot {
+    flex: 1;
+    height: 4px;
+    background: var(--ink-200);
+    border-radius: var(--r-pill);
+  }
+  .step-indicator .dot.active { background: var(--brand-500); }
+  .setup h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  .setup .sub {
+    color: var(--ink-500);
+    margin-top: 6px;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .currency-picker {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .currency-option {
+    background: var(--ink-50);
+    border: 2px solid transparent;
+    border-radius: var(--r-md);
+    padding: 16px;
+    text-align: left;
+    cursor: pointer;
+  }
+  .currency-option.active {
+    background: var(--brand-50);
+    border-color: var(--brand-500);
+  }
+  .currency-option .code {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+  }
+  .currency-option .name {
+    font-size: 12px;
+    color: var(--ink-500);
+    margin-top: 2px;
+  }
+
+  .periodicity {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+  }
+  .period-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--ink-50);
+    border: 2px solid transparent;
+    border-radius: var(--r-md);
+    padding: 16px;
+    cursor: pointer;
+  }
+  .period-option.active { background: var(--brand-50); border-color: var(--brand-500); }
+  .period-option .title { font-weight: 600; }
+  .period-option .desc { font-size: 12px; color: var(--ink-500); margin-top: 2px; }
+  .period-option .radio {
+    width: 22px; height: 22px; border-radius: var(--r-pill);
+    border: 2px solid var(--ink-300);
+    position: relative;
+  }
+  .period-option.active .radio { border-color: var(--brand-500); }
+  .period-option.active .radio::after {
+    content: '';
+    position: absolute;
+    top: 3px; left: 3px;
+    width: 12px; height: 12px;
+    background: var(--brand-500);
+    border-radius: var(--r-pill);
+  }
+
+  .date-input {
+    padding: 14px 16px;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-md);
+    font-size: 16px;
+    font-family: inherit;
+    color: var(--ink-900);
+    background: white;
+    margin-top: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .footer {
+    margin-top: auto;
+    padding-top: 24px;
+  }
+  .callout {
+    background: #EEF6F1;
+    border: 1px solid #AED5BB;
+    border-radius: var(--r-md);
+    padding: 14px 16px;
+    color: var(--brand-700);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Account setup wizard</h1>
+  <p>TASK-21 · First-run configuration — currency, start date, periodicity</p>
+</div>
+
+<div class="phones">
+
+  <!-- STEP 1 -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen setup">
+      <div class="step-indicator">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+      </div>
+      <h1>Pick your base currency</h1>
+      <p class="sub">All your snapshots will be recorded in this currency. You can change it later — it only affects display.</p>
+
+      <div class="currency-picker">
+        <div class="currency-option active">
+          <div class="code">EUR</div>
+          <div class="name">Euro</div>
+        </div>
+        <div class="currency-option">
+          <div class="code">USD</div>
+          <div class="name">US Dollar</div>
+        </div>
+        <div class="currency-option">
+          <div class="code">CZK</div>
+          <div class="name">Czech Koruna</div>
+        </div>
+        <div class="currency-option">
+          <div class="code">GBP</div>
+          <div class="name">British Pound</div>
+        </div>
+      </div>
+
+      <a style="margin-top:16px;text-align:center;display:block;color:var(--brand-600);font-size:14px;font-weight:500">Show all ISO 4217 codes</a>
+
+      <div class="footer">
+        <button class="btn btn-primary btn-block btn-lg">Continue</button>
+      </div>
+    </div>
+    <span class="phone-label">Step 1 — currency</span>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen setup">
+      <div class="step-indicator">
+        <div class="dot active"></div>
+        <div class="dot active"></div>
+        <div class="dot"></div>
+      </div>
+      <h1>When did you start tracking?</h1>
+      <p class="sub">Your first snapshot will be recorded for this date. Cannot be set to a future date.</p>
+
+      <div class="date-input">
+        <span>1 January 2024</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </div>
+
+      <div class="callout">
+        <strong>Locked once snapshots exist.</strong> After your first snapshot, this date can no longer be changed.
+      </div>
+
+      <div class="footer">
+        <button class="btn btn-primary btn-block btn-lg">Continue</button>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px">Back</button>
+      </div>
+    </div>
+    <span class="phone-label">Step 2 — start date</span>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="phone">
+    <div class="status-bar"><span>9:41</span><span class="right">●●●</span></div>
+    <div class="screen setup">
+      <div class="step-indicator">
+        <div class="dot active"></div>
+        <div class="dot active"></div>
+        <div class="dot active"></div>
+      </div>
+      <h1>How often do you want to snapshot?</h1>
+      <p class="sub">Gap detection runs after every login. Missing snapshots must be filled before you can access the app.</p>
+
+      <div class="periodicity">
+        <div class="period-option active">
+          <div>
+            <div class="title">Monthly</div>
+            <div class="desc">Most detail · 12 per year</div>
+          </div>
+          <div class="radio"></div>
+        </div>
+        <div class="period-option">
+          <div>
+            <div class="title">Quarterly</div>
+            <div class="desc">Recommended · 4 per year</div>
+          </div>
+          <div class="radio"></div>
+        </div>
+        <div class="period-option">
+          <div>
+            <div class="title">Yearly</div>
+            <div class="desc">Long-term only · 1 per year</div>
+          </div>
+          <div class="radio"></div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <button class="btn btn-primary btn-block btn-lg">Finish setup</button>
+        <button class="btn btn-ghost btn-block" style="margin-top:8px">Back</button>
+      </div>
+    </div>
+    <span class="phone-label">Step 3 — periodicity</span>
+  </div>
+
+</div>
+
+</body>
+</html>

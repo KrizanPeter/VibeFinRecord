@@ -1,5 +1,7 @@
 # FinClaude — Personal Finance Tracker
-## Specification v0.1
+## Specification v0.2
+
+> **Changelog v0.2** — Added §4.7 `DashboardChart` entity; §5.10 Manage Dashboard Charts use case; dashboard API endpoints (`/api/v1/dashboard/charts`); updated §8 screens + navigation; removed Dashboard from §9 Out of Scope.
 
 ---
 
@@ -144,9 +146,9 @@ A user-defined label that groups assets together for aggregated tracking.
 
 **AssetGroupMembership** (join table, no `BaseEntity`):
 
-| Field       | Type | Required | Notes          |
-|-------------|------|----------|----------------|
-| AssetId     | UUID | Yes      | FK → Asset     |
+| Field       | Type | Required | Notes           |
+|-------------|------|----------|-----------------|
+| AssetId     | UUID | Yes      | FK → Asset      |
 | GroupId     | UUID | Yes      | FK → AssetGroup |
 
 Composite primary key: `(AssetId, GroupId)`.
@@ -156,21 +158,21 @@ Composite primary key: `(AssetId, GroupId)`.
 
 A point-in-time recording of the value of every asset at a given snapshot date.
 
-| Field        | Type | Required | Notes                                     |
-|--------------|------|----------|-------------------------------------------|
-| AccountId    | UUID | Yes      | Owner (FK → Account)                      |
-| SnapshotDate | date | Yes      | The date this snapshot represents         |
+| Field        | Type | Required | Notes                             |
+|--------------|------|----------|-----------------------------------|
+| AccountId    | UUID | Yes      | Owner (FK → Account)              |
+| SnapshotDate | date | Yes      | The date this snapshot represents |
 
 ### 4.5 AssetSnapshot
 *Extends `BaseEntity`. Soft-delete **not** applied — immutable historical record.*
 
 The value of a single asset within a Snapshot.
 
-| Field      | Type          | Required | Notes                                        |
-|------------|---------------|----------|----------------------------------------------|
-| SnapshotId | UUID          | Yes      | FK → Snapshot                                |
-| AssetId    | UUID          | Yes      | FK → Asset                                   |
-| Value      | decimal(18,4) | Yes      | Value of the asset on that date              |
+| Field      | Type          | Required | Notes                           |
+|------------|---------------|----------|---------------------------------|
+| SnapshotId | UUID          | Yes      | FK → Snapshot                   |
+| AssetId    | UUID          | Yes      | FK → Asset                      |
+| Value      | decimal(18,4) | Yes      | Value of the asset on that date |
 
 - Every Snapshot must include a value for every active (non-soft-deleted) Asset belonging to the account at the time of submission.
 - `decimal(18,4)` — four decimal places for financial precision.
@@ -192,6 +194,38 @@ A target value that the user wants an Asset or Asset Group to reach by a specifi
 - A Goal must be linked to exactly one of: an Asset OR an Asset Group (not both, not neither).
 - Progress is calculated as: `currentValue / targetValue × 100%` where `currentValue` is the latest snapshot value for the linked Asset or Group.
 - When the linked Asset or AssetGroup is soft-deleted, all associated Goals are cascade soft-deleted.
+
+### 4.7 DashboardChart
+*Extends `BaseEntity`. Soft-delete applied.*
+
+A user-created chart configuration that renders snapshot data for a single Asset or Asset Group as a visual graph on the Dashboard.
+
+| Field      | Type   | Required | Notes                                                     |
+|------------|--------|----------|-----------------------------------------------------------|
+| AccountId  | UUID   | Yes      | Owner (FK → Account)                                      |
+| Name       | string | Yes      | User-defined label, e.g. "VWCE ETF — value"              |
+| ChartType  | enum   | Yes      | `Line` \| `Bar` \| `Pie`                                 |
+| SourceType | enum   | Yes      | `Asset` \| `AssetGroup`                                  |
+| AssetId    | UUID   | No       | FK → Asset. Required when `SourceType = Asset`.           |
+| GroupId    | UUID   | No       | FK → AssetGroup. Required when `SourceType = AssetGroup`. |
+
+**Constraints:**
+- `ChartType = Pie` is only permitted when `SourceType = AssetGroup`. Submitting `Pie` with `SourceType = Asset` returns `400 Bad Request`.
+- Must link to exactly one of Asset or AssetGroup (not both, not neither). Violation returns `400 Bad Request`.
+- When the linked Asset or AssetGroup is soft-deleted, all associated `DashboardChart` records are **cascade soft-deleted**.
+
+**Chart data computation** (performed at query time; no pre-computed cache in MVP):
+
+| ChartType | SourceType  | Data returned                                                                                     |
+|-----------|-------------|---------------------------------------------------------------------------------------------------|
+| Line      | Asset       | Time series of `AssetSnapshot.Value` for the linked Asset, ordered by `SnapshotDate` ascending   |
+| Bar       | Asset       | Same as Line — client decides rendering style                                                     |
+| Line      | AssetGroup  | Sum of `AssetSnapshot.Value` for all Assets in the Group per `SnapshotDate`, ascending            |
+| Bar       | AssetGroup  | Same as Line (Group) — client decides rendering style                                             |
+| Pie       | AssetGroup  | Each Asset's `AssetSnapshot.Value` as a share of the Group total at the **latest** SnapshotDate  |
+
+- If no snapshot data exists for the linked source, the data array is empty and the API returns `200 OK` with `{ dataPoints: [] }`.
+- Soft-deleted Assets are **excluded** from Group aggregation going forward; historical values that predate the soft-delete remain in the series (history is never rewritten).
 
 ---
 
@@ -253,12 +287,24 @@ If `missingSnapshotDates` is not empty, the app **blocks navigation** and requir
 - Link a Goal to an Asset or Asset Group.
 - View goal progress (current value vs. target, percentage, projected completion based on trend).
 
-### 5.9 Dashboard (future — not MVP)
-- Net worth over time (line chart from snapshots).
-- Per-group net worth over time.
-- Goal progress bars.
-- Growth rate per period (MoM, QoQ, YoY).
-- Configurable widgets.
+### 5.9 Dashboard
+The Dashboard is the home tab of the main app once setup and snapshot gates are cleared. It shows:
+- A **net-worth strip** with the account's total value from the latest snapshot and its change vs. the previous snapshot.
+- A **scrollable list of chart cards** — each showing a mini chart preview, source name, chart type chip, and latest value.
+
+The Dashboard has no charts by default. The user builds their own view using the Add Chart wizard (§5.10).
+
+### 5.10 Manage Dashboard Charts (CRUD)
+- **Create** — Add Chart wizard:
+  1. User selects source type: **Asset** or **Asset Group**.
+  2. User selects the specific Asset or Group from a list.
+  3. User selects chart type. `Pie` is only offered when source is a Group.
+  4. User sets a chart name (pre-filled with a sensible default).
+  5. Chart is saved and appears on the Dashboard.
+- **List** — `GET /api/v1/dashboard/charts` returns all active charts for the account, ordered by `CreatedAt` ascending.
+- **Detail / data** — `GET /api/v1/dashboard/charts/{id}/data` returns computed data points for rendering. Supports a `?range=3m|6m|1y|all` query parameter (default `all`). Data is computed at query time from existing snapshots.
+- **Update** — Edit chart name or chart type (subject to the Pie constraint).
+- **Delete** — Soft-delete the chart. Does not affect underlying snapshot data.
 
 ---
 
@@ -286,34 +332,40 @@ If the target day doesn't exist in a month, clamp to the last day of that month 
 
 ### Endpoints
 
-| Method   | Path                                    | Auth | Description                              |
-|----------|-----------------------------------------|------|------------------------------------------|
-| `POST`   | `/api/v1/auth/register`                 | No   | Register; creates Identity User + Account |
-| `POST`   | `/api/v1/auth/login`                    | No   | Login; returns JWT + refresh token       |
-| `POST`   | `/api/v1/auth/refresh`                  | No   | Exchange refresh token for new JWT       |
-| `GET`    | `/api/v1/account`                       | Yes  | Get current account (currency, periodicity, setup status) |
-| `PUT`    | `/api/v1/account`                       | Yes  | Update account setup (currency, start date, periodicity) |
-| `GET`    | `/api/v1/assets`                        | Yes  | List active assets                       |
-| `POST`   | `/api/v1/assets`                        | Yes  | Create asset                             |
-| `GET`    | `/api/v1/assets/{id}`                   | Yes  | Get asset detail                         |
-| `PUT`    | `/api/v1/assets/{id}`                   | Yes  | Update asset                             |
-| `DELETE` | `/api/v1/assets/{id}`                   | Yes  | Soft-delete asset (cascades to Goals)    |
-| `GET`    | `/api/v1/groups`                        | Yes  | List groups                              |
-| `POST`   | `/api/v1/groups`                        | Yes  | Create group                             |
-| `GET`    | `/api/v1/groups/{id}`                   | Yes  | Get group with member assets             |
-| `PUT`    | `/api/v1/groups/{id}`                   | Yes  | Update group name                        |
-| `DELETE` | `/api/v1/groups/{id}`                   | Yes  | Soft-delete group (cascades to Goals)    |
-| `POST`   | `/api/v1/groups/{id}/assets`            | Yes  | Add asset to group                       |
-| `DELETE` | `/api/v1/groups/{id}/assets/{assetId}`  | Yes  | Remove asset from group                  |
-| `GET`    | `/api/v1/snapshots/status`              | Yes  | Get missing snapshot dates + next due date |
-| `GET`    | `/api/v1/snapshots`                     | Yes  | List snapshots                           |
-| `POST`   | `/api/v1/snapshots`                     | Yes  | Submit a snapshot (all asset values)     |
-| `GET`    | `/api/v1/snapshots/{id}`                | Yes  | Get snapshot with all asset values       |
-| `GET`    | `/api/v1/goals`                         | Yes  | List goals with current progress         |
-| `POST`   | `/api/v1/goals`                         | Yes  | Create goal                              |
-| `GET`    | `/api/v1/goals/{id}`                    | Yes  | Get goal with progress detail            |
-| `PUT`    | `/api/v1/goals/{id}`                    | Yes  | Update goal                              |
-| `DELETE` | `/api/v1/goals/{id}`                    | Yes  | Soft-delete goal                         |
+| Method   | Path                                         | Auth | Description                                               |
+|----------|----------------------------------------------|------|-----------------------------------------------------------|
+| `POST`   | `/api/v1/auth/register`                      | No   | Register; creates Identity User + Account                 |
+| `POST`   | `/api/v1/auth/login`                         | No   | Login; returns JWT + refresh token                        |
+| `POST`   | `/api/v1/auth/refresh`                       | No   | Exchange refresh token for new JWT                        |
+| `GET`    | `/api/v1/account`                            | Yes  | Get current account (currency, periodicity, setup status) |
+| `PUT`    | `/api/v1/account`                            | Yes  | Update account setup (currency, start date, periodicity)  |
+| `GET`    | `/api/v1/assets`                             | Yes  | List active assets                                        |
+| `POST`   | `/api/v1/assets`                             | Yes  | Create asset                                              |
+| `GET`    | `/api/v1/assets/{id}`                        | Yes  | Get asset detail                                          |
+| `PUT`    | `/api/v1/assets/{id}`                        | Yes  | Update asset                                              |
+| `DELETE` | `/api/v1/assets/{id}`                        | Yes  | Soft-delete asset (cascades to Goals, DashboardCharts)    |
+| `GET`    | `/api/v1/groups`                             | Yes  | List groups                                               |
+| `POST`   | `/api/v1/groups`                             | Yes  | Create group                                              |
+| `GET`    | `/api/v1/groups/{id}`                        | Yes  | Get group with member assets                              |
+| `PUT`    | `/api/v1/groups/{id}`                        | Yes  | Update group name                                         |
+| `DELETE` | `/api/v1/groups/{id}`                        | Yes  | Soft-delete group (cascades to Goals, DashboardCharts)    |
+| `POST`   | `/api/v1/groups/{id}/assets`                 | Yes  | Add asset to group                                        |
+| `DELETE` | `/api/v1/groups/{id}/assets/{assetId}`       | Yes  | Remove asset from group                                   |
+| `GET`    | `/api/v1/snapshots/status`                   | Yes  | Get missing snapshot dates + next due date                |
+| `GET`    | `/api/v1/snapshots`                          | Yes  | List snapshots                                            |
+| `POST`   | `/api/v1/snapshots`                          | Yes  | Submit a snapshot (all asset values)                      |
+| `GET`    | `/api/v1/snapshots/{id}`                     | Yes  | Get snapshot with all asset values                        |
+| `GET`    | `/api/v1/goals`                              | Yes  | List goals with current progress                          |
+| `POST`   | `/api/v1/goals`                              | Yes  | Create goal                                               |
+| `GET`    | `/api/v1/goals/{id}`                         | Yes  | Get goal with progress detail                             |
+| `PUT`    | `/api/v1/goals/{id}`                         | Yes  | Update goal                                               |
+| `DELETE` | `/api/v1/goals/{id}`                         | Yes  | Soft-delete goal                                          |
+| `GET`    | `/api/v1/dashboard/charts`                   | Yes  | List all dashboard charts for the account                 |
+| `POST`   | `/api/v1/dashboard/charts`                   | Yes  | Create a dashboard chart                                  |
+| `GET`    | `/api/v1/dashboard/charts/{id}`              | Yes  | Get chart configuration                                   |
+| `PUT`    | `/api/v1/dashboard/charts/{id}`              | Yes  | Update chart name or type                                 |
+| `DELETE` | `/api/v1/dashboard/charts/{id}`              | Yes  | Soft-delete chart                                         |
+| `GET`    | `/api/v1/dashboard/charts/{id}/data`         | Yes  | Computed data points (`?range=3m\|6m\|1y\|all`)          |
 
 ---
 
@@ -331,18 +383,20 @@ If the target day doesn't exist in a month, clamp to the last day of that month 
 
 ### Screens
 
-| Screen              | Purpose                                               |
-|---------------------|-------------------------------------------------------|
-| Login / Register    | Authentication                                        |
-| Account Setup       | Currency, start date, periodicity (first-time wizard) |
-| Snapshot Gate       | Enforced post-login flow — all missing snapshots must be filled before proceeding |
-| Snapshot Entry Form | Enter values for all assets for a given snapshot date |
-| Assets List         | View, create, edit, delete assets                     |
-| Asset Detail        | History of values for one asset                       |
-| Groups List         | View, create, edit, delete groups; assign assets      |
-| Goals List          | View all goals with progress                          |
-| Goal Detail / Form  | Create or edit a goal                                 |
-| Dashboard           | (Future) Charts and summary widgets                   |
+| Screen              | Purpose                                                          |
+|---------------------|------------------------------------------------------------------|
+| Login / Register    | Authentication                                                   |
+| Account Setup       | Currency, start date, periodicity (first-time wizard)            |
+| Snapshot Gate       | Enforced post-login flow — all missing snapshots must be filled  |
+| Snapshot Entry Form | Enter values for all assets for a given snapshot date            |
+| Dashboard           | Net-worth strip + scrollable list of user-created chart cards    |
+| Add Chart           | Wizard: pick source type → source → chart type → name → save    |
+| Chart Detail        | Full chart view with range selector (3M/6M/1Y/All); edit/delete |
+| Assets List         | View, create, edit, delete assets                                |
+| Asset Detail        | History of values for one asset                                  |
+| Groups List         | View, create, edit, delete groups; assign assets                 |
+| Goals List          | View all goals with progress                                     |
+| Goal Detail / Form  | Create or edit a goal                                            |
 
 ### Navigation Structure
 
@@ -355,7 +409,7 @@ Root
     ├── Account Setup (wizard, shown once)
     ├── Snapshot Gate (blocks navigation until all missing snapshots are filled)
     └── Bottom Tab Navigator
-        ├── Dashboard (future)
+        ├── Dashboard   ← home tab; net-worth strip + user chart cards
         ├── Assets
         ├── Groups
         └── Goals
@@ -372,8 +426,9 @@ The following are explicitly deferred to future releases:
 3. **Bank/broker API integrations** — Automatic pulling of asset values.
 4. **Multiple currencies** — All values in a single base currency.
 5. **Roles and authorization** — Only one role (authenticated user) in MVP.
-6. **Dashboard charts** — UI for visual analytics.
-7. **Social / OAuth login** — Only email/password in MVP.
+6. **Social / OAuth login** — Only email/password in MVP.
+7. **Dashboard chart ordering / pinning** — Charts appear in creation order; drag-to-reorder is deferred.
+8. **Chart annotations** — No ability to mark events on a chart timeline in MVP.
 
 ---
 
@@ -403,7 +458,6 @@ The application layer is split into **Commands** (write intent) and **Queries** 
 **Library:** Hand-rolled dispatcher — no MediatR or paid alternatives. Define minimal interfaces directly:
 
 ```csharp
-// Application layer interfaces
 public interface ICommand { }
 public interface ICommand<TResult> { }
 public interface IQuery<TResult> { }
@@ -440,26 +494,6 @@ Controllers contain **no logic**. Their only responsibility is:
 2. Resolve and invoke the appropriate handler.
 3. Map the handler result to an HTTP response.
 
-```csharp
-[ApiController]
-[Route("api/v1/assets")]
-public class AssetsController : ControllerBase
-{
-    private readonly ICommandHandler<CreateAssetCommand, Guid> _createHandler;
-
-    public AssetsController(ICommandHandler<CreateAssetCommand, Guid> createHandler)
-        => _createHandler = createHandler;
-
-    [HttpPost]
-    public async Task<IActionResult> Create(CreateAssetRequest request, CancellationToken ct)
-    {
-        var command = new CreateAssetCommand(AccountId, request.Name, request.Institution);
-        var result = await _createHandler.HandleAsync(command, ct);
-        return result.IsSuccess ? CreatedAtAction(...) : Problem(result);
-    }
-}
-```
-
 Rules:
 - No business logic, no repository calls, no `if/else` beyond HTTP mapping.
 - `AccountId` is extracted from the JWT claim via a base controller helper or extension method.
@@ -475,8 +509,6 @@ Handlers are **orchestrators**, not implementors of business logic. A handler:
 - Wraps the execution in a Unit of Work.
 - Does not contain domain decisions itself and never loops over steps.
 
-**`IChainProvider<TContext>`** is a per-command interface whose implementation wires up the full step chain and returns the first step (see §11.4):
-
 ```csharp
 public interface IChainProvider<TContext>
 {
@@ -484,50 +516,11 @@ public interface IChainProvider<TContext>
 }
 ```
 
-**Handler example:**
-
-```csharp
-public class CreateAssetCommandHandler : ICommandHandler<CreateAssetCommand, Guid>
-{
-    private readonly IUnitOfWork _uow;
-    private readonly IChainProvider<CreateAssetContext> _chainProvider;
-
-    public CreateAssetCommandHandler(
-        IUnitOfWork uow,
-        IChainProvider<CreateAssetContext> chainProvider)
-    {
-        _uow = uow;
-        _chainProvider = chainProvider;
-    }
-
-    public async Task<ErrorOr<Guid>> HandleAsync(CreateAssetCommand command, CancellationToken ct)
-    {
-        var context = new CreateAssetContext(command);
-        var chain = _chainProvider.GetChain();
-
-        await _uow.BeginAsync(ct);
-        try
-        {
-            var result = await chain.ExecuteAsync(context, ct);
-            if (result.IsError) { await _uow.RollbackAsync(ct); return result.Errors; }
-
-            await _uow.CommitAsync(ct);
-            return context.CreatedId;
-        }
-        catch
-        {
-            await _uow.RollbackAsync(ct);
-            throw;
-        }
-    }
-}
-```
-
 ---
 
 ### 11.4 Chain of Responsibility — Step Pipeline
 
-Business logic inside a handler is broken into **discrete, single-responsibility steps** chained together like middleware. Each step holds a reference to `_next` and decides whether to invoke it — the handler does not loop over steps externally.
+Business logic inside a handler is broken into **discrete, single-responsibility steps** chained together like middleware.
 
 ```csharp
 public interface IStep<TContext>
@@ -536,91 +529,9 @@ public interface IStep<TContext>
 }
 ```
 
-A `TContext` object is a mutable bag that carries the command input and accumulates output (e.g., the newly created entity's ID) across steps.
+**Query step result propagation:** Query context objects carry a typed `Result` property populated by the final step; the handler reads it after chain execution.
 
-**Query step result propagation:** Query context objects carry a typed `Result` property that the final step populates. The handler reads it after chain execution:
-
-```csharp
-public class GetAssetContext
-{
-    public GetAssetQuery Query { get; }
-    public AssetDto? Result { get; set; }  // populated by the final query step
-
-    public GetAssetContext(GetAssetQuery query) => Query = query;
-}
-
-// In the handler — after chain.ExecuteAsync:
-var result = await chain.ExecuteAsync(context, ct);
-if (result.IsError) return result.Errors;
-return context.Result!;
-```
-
-This keeps the step interface uniform (`IStep<TContext>` always returns `ErrorOr<Success>`) for both command and query chains.
-
-**All steps inherit from `BaseStep<TContext>` and call `NextAsync` to continue the chain:**
-
-```csharp
-public class ValidateAssetStep : BaseStep<CreateAssetContext>
-{
-    public override async Task<ErrorOr<Success>> ExecuteAsync(CreateAssetContext context, CancellationToken ct)
-    {
-        if (string.IsNullOrWhiteSpace(context.Command.Name))
-            return Error.Validation("Asset.Name", "Name is required.");
-
-        return await NextAsync(context, ct);
-    }
-}
-
-// Terminal step — calls NextAsync which returns Result.Success when _next is null
-public class PersistAssetStep : BaseStep<CreateAssetContext>
-{
-    private readonly IAssetRepository _repository;
-
-    public PersistAssetStep(IAssetRepository repository) => _repository = repository;
-
-    public override async Task<ErrorOr<Success>> ExecuteAsync(CreateAssetContext context, CancellationToken ct)
-    {
-        await _repository.AddAsync(context.Asset, ct);
-        return await NextAsync(context, ct);
-    }
-}
-```
-
-**Chain is built in the `IChainProvider` implementation and returned as the first step:**
-
-```csharp
-public class CreateAssetChainProvider : IChainProvider<CreateAssetContext>
-{
-    // Steps are injected (resolved from DI) so they can have their own dependencies
-    private readonly ValidateAssetStep _validate;
-    private readonly AuthorizeAssetStep _authorize;
-    private readonly CreateAssetDomainStep _domain;
-    private readonly PersistAssetStep _persist;
-
-    public CreateAssetChainProvider(
-        ValidateAssetStep validate,
-        AuthorizeAssetStep authorize,
-        CreateAssetDomainStep domain,
-        PersistAssetStep persist)
-    {
-        _validate = validate;
-        _authorize = authorize;
-        _domain = domain;
-        _persist = persist;
-    }
-
-    public IStep<CreateAssetContext> GetChain()
-    {
-        _validate.SetNext(_authorize);
-        _authorize.SetNext(_domain);
-        _domain.SetNext(_persist);
-        // _persist is terminal — no SetNext call
-        return _validate;
-    }
-}
-```
-
-Steps expose `SetNext` rather than receiving `_next` through their constructor, keeping DI-friendly construction separate from chain wiring:
+**All steps inherit from `BaseStep<TContext>`:**
 
 ```csharp
 public abstract class BaseStep<TContext> : IStep<TContext>
@@ -638,18 +549,17 @@ public abstract class BaseStep<TContext> : IStep<TContext>
 
 **Typical step order for a command handler:**
 
-| Order | Step                 | Responsibility                                          |
-|-------|----------------------|---------------------------------------------------------|
-| 1     | Validation step      | Validate command fields                                 |
-| 2     | Authorization step   | Verify the Account owns all referenced resources        |
-| 3     | Domain logic step(s) | Create/mutate domain entities                           |
-| 4     | Persistence step     | Write to repository via `_next`-terminal               |
+| Order | Step            | Responsibility                                    |
+|-------|-----------------|---------------------------------------------------|
+| 1     | Validation      | Validate command fields                           |
+| 2     | Authorization   | Verify the Account owns all referenced resources  |
+| 3     | Domain logic    | Create/mutate domain entities                     |
+| 4     | Persistence     | Write to repository                               |
 
 Rules:
 - Each step is independently testable.
 - A step short-circuits by returning `Error.*` without calling `_next`.
-- A step can execute logic both **before** and **after** calling `_next` (e.g., for logging or enrichment).
-- Query handler steps follow the same pattern but are read-only (no UoW, no mutations).
+- Query handler steps are read-only (no UoW, no mutations).
 
 ---
 
@@ -658,10 +568,8 @@ Rules:
 - The `IUnitOfWork` interface lives in the **Application** layer.
 - Its implementation (wrapping EF Core `DbContext.SaveChangesAsync`) lives in **Infrastructure**.
 - UoW is **opened and committed/rolled back exclusively in the handler** — never inside a step or repository.
-- Repositories within a step call `Add`, `Update`, `Remove` on the EF context but do **not** call `SaveChangesAsync` themselves.
 
 ```csharp
-// Application/Interfaces
 public interface IUnitOfWork
 {
     Task BeginAsync(CancellationToken ct);
@@ -677,26 +585,13 @@ public interface IUnitOfWork
 All handler and step return types use **`ErrorOr<T>`** (NuGet: `ErrorOr`). No exceptions for expected domain failures.
 
 ```csharp
-// Command with a return value
-Task<ErrorOr<Guid>> HandleAsync(CreateAssetCommand command, CancellationToken ct);
-
-// Command with no return value
+Task<ErrorOr<Guid>>    HandleAsync(CreateAssetCommand command, CancellationToken ct);
 Task<ErrorOr<Success>> HandleAsync(DeleteAssetCommand command, CancellationToken ct);
-
-// Query
 Task<ErrorOr<AssetDto>> HandleAsync(GetAssetQuery query, CancellationToken ct);
-
-// Step
 Task<ErrorOr<Success>> ExecuteAsync(CreateAssetContext context, CancellationToken ct);
 ```
 
-**Why `ErrorOr`:**
-- Built-in `Error` categories (`Error.Validation`, `Error.NotFound`, `Error.Conflict`, `Error.Unexpected`) map directly to RFC 9457 Problem Details HTTP responses (§7).
-- `ErrorOr<Success>` covers void operations without a hand-rolled unit type.
-- Chain short-circuit is idiomatic: `if (result.IsError) return result.Errors;`
-- Single lightweight NuGet package, no transitive dependencies.
-
-Controllers map `ErrorOr` results to HTTP responses via a shared extension method or base controller helper — keeping the mapping logic in one place.
+Controllers map `ErrorOr` results to HTTP responses via a shared extension method or base controller helper.
 
 ---
 
@@ -704,29 +599,32 @@ Controllers map `ErrorOr` results to HTTP responses via a shared extension metho
 
 | Layer       | What to test                                              | How                                                      |
 |-------------|-----------------------------------------------------------|----------------------------------------------------------|
-| Steps       | Each step in isolation — happy path + all error cases     | Unit tests; mock injected dependencies (repositories etc.) |
-| Handlers    | Orchestration — UoW opens, commits, and rolls back correctly | Unit tests; mock `IChainProvider` and `IUnitOfWork`    |
+| Steps       | Each step in isolation — happy path + all error cases     | Unit tests; mock injected dependencies                   |
+| Handlers    | Orchestration — UoW opens, commits, rolls back correctly  | Unit tests; mock `IChainProvider` and `IUnitOfWork`      |
 | Domain      | Business rules on entities and value objects              | Unit tests; no mocks needed                              |
-| API         | Request → response mapping, auth enforcement, Problem Details format | Integration tests via `WebApplicationFactory`  |
+| API         | Request → response mapping, auth, Problem Details format  | Integration tests via `WebApplicationFactory`            |
 | Repositories| EF Core queries return correct filtered/scoped data       | Integration tests against a real SQLite test database    |
 
 Rules:
-- Steps must be the primary unit test target — each step is a single, focused behaviour and should be tested independently.
-- No mocking the database in repository tests — use a real SQLite instance to avoid mock/prod divergence.
-- Integration tests own the full request pipeline (middleware, auth, mapping) — do not duplicate this in unit tests.
+- Steps must be the primary unit test target.
+- No mocking the database in repository tests — use real SQLite.
+- Integration tests own the full request pipeline.
 
 ---
 
 ## 13. Open Questions / Future Decisions
 
-- **Snapshot day alignment**: ✅ Resolved — when the target day does not exist in a month, clamp to the last day of that month (e.g. Jan 31 → Feb 28 → Mar 31 → Apr 30). This applies every month independently, always preserving end-of-month intent.
-- **Asset soft-delete**: ✅ Resolved — soft-deleted assets are excluded from future snapshot forms but their `AssetSnapshot` records are always included in historical net worth calculations. History is never rewritten.
-- **Goal linked to deleted asset/group**: ✅ Resolved — when an Asset or AssetGroup is soft-deleted, all Goals linked to it are cascade soft-deleted automatically. No orphaned or broken goal state to handle in the UI.
-- **Multiple missing snapshots**: ✅ Resolved — enforced. If missing snapshots exist the user must fill all of them before accessing the rest of the app. Gaps in the timeline corrupt net worth trends and goal progress calculations.
-- **Refresh token storage**: ✅ Resolved — stored in ASP.NET Identity `UserTokens` table via `UserManager`. Tokens are rotated on use. See §3.
-- **Account setup field editability**: ✅ Resolved — `Currency` is freely editable. `SnapshotStartDate` and `SnapshotPeriodicity` are locked once any `Snapshot` exists (409 on attempt). See §5.3.
-- **Snapshot date validation**: ✅ Resolved — only dates in the gap-detection missing list are accepted; future dates → 400; duplicate dates → 409. See §5.5.
-- **Pagination strategy**: ✅ Resolved — offset-based pagination (`?page=1&pageSize=20`) on all list endpoints. See §7.
-- **Query step result propagation**: ✅ Resolved — query contexts carry a typed `Result` property populated by the final step; handler reads it after chain execution. See §11.4.
-- **Goal progress with no snapshots**: ✅ Resolved — return `currentValue: null` and `progressPercent: null` in the DTO when no snapshot data exists yet.
-- **AssetGroupMembership on asset soft-delete**: ✅ Resolved — when an Asset is soft-deleted, its `AssetGroupMembership` rows are hard-deleted (cascade delete configured in EF). The join table has no soft-delete.
+- **Snapshot day alignment**: ✅ Resolved — clamp to last day of month when target day doesn't exist.
+- **Asset soft-delete**: ✅ Resolved — excluded from future forms; historical AssetSnapshot records preserved.
+- **Goal linked to deleted asset/group**: ✅ Resolved — cascade soft-delete.
+- **Multiple missing snapshots**: ✅ Resolved — enforced; no skip.
+- **Refresh token storage**: ✅ Resolved — ASP.NET Identity `UserTokens` table, rotated on use.
+- **Account setup field editability**: ✅ Resolved — `Currency` freely editable; `SnapshotStartDate` + `SnapshotPeriodicity` locked once any Snapshot exists (409).
+- **Snapshot date validation**: ✅ Resolved — only gap-detected dates accepted; future → 400; duplicate → 409.
+- **Pagination strategy**: ✅ Resolved — offset-based (`?page=1&pageSize=20`).
+- **Query step result propagation**: ✅ Resolved — typed `Result` property on query context, populated by final step.
+- **Goal progress with no snapshots**: ✅ Resolved — return `currentValue: null`, `progressPercent: null`.
+- **AssetGroupMembership on asset soft-delete**: ✅ Resolved — `AssetGroupMembership` rows hard-deleted (cascade).
+- **DashboardChart linked to deleted asset/group**: ✅ Resolved — cascade soft-delete, same pattern as Goals.
+- **DashboardChart data with soft-deleted assets**: ✅ Resolved — excluded from Group aggregation going forward; historical values that predate the soft-delete remain in the series.
+- **DashboardChart ordering**: Open — deferred to post-MVP; charts appear in creation order.

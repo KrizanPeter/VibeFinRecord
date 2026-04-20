@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinClaude — Auth screens</title>
+<link rel="stylesheet" href="../assets/phone.css" />
+<style>
+  .auth-screen {
+    background: linear-gradient(180deg, #EEF6F1 0%, #FFFFFF 38%);
+    flex: 1;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+  }
+  .auth-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 28px;
+    margin-bottom: 40px;
+  }
+  .auth-brand .mark {
+    width: 72px; height: 72px;
+    border-radius: 18px;
+    background: linear-gradient(135deg,#1F8A5E,#125639);
+    display: flex; align-items: center; justify-content: center;
+    box-shadow: 0 10px 24px rgba(31,138,94,0.25);
+  }
+  .auth-brand .mark svg { width: 40px; height: 40px; }
+  .auth-brand h1 {
+    font-size: 26px; font-weight: 800; letter-spacing: -0.02em;
+    margin-top: 16px;
+  }
+  .auth-brand p {
+    color: var(--ink-500); font-size: 14px; margin-top: 4px;
+  }
+
+  .tabs {
+    display: flex;
+    background: var(--ink-100);
+    border-radius: var(--r-pill);
+    padding: 4px;
+    margin-bottom: 28px;
+  }
+  .tabs .tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: var(--r-pill);
+    color: var(--ink-500);
+  }
+  .tabs .tab.active { background: var(--white); color: var(--ink-900); box-shadow: var(--shadow-xs); }
+
+  .oauth-note {
+    text-align: center;
+    color: var(--ink-400);
+    font-size: 12px;
+    margin-top: auto;
+    padding-top: 24px;
+  }
+</style>
+</head>
+<body>
+
+<div class="page-title">
+  <h1>Auth screens</h1>
+  <p>TASK-20 · Login + Register flow</p>
+</div>
+
+<div class="phones">
+
+  <!-- LOGIN -->
+  <div class="phone">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="right">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6h2v8H2zM6 4h2v10H6zM10 2h2v12h-2zM14 5h2v9h-2z"/></svg>
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a7 7 0 00-6.7 5 .5.5 0 00.4.7 .5.5 0 00.5-.3A6 6 0 0110 4a6 6 0 015.8 4.4.5.5 0 00.6.3.5.5 0 00.3-.7A7 7 0 0010 3zm0 3a4 4 0 00-3.6 2.3.5.5 0 00.3.7.5.5 0 00.6-.3A3 3 0 0110 7a3 3 0 012.7 1.7.5.5 0 00.6.3.5.5 0 00.3-.7A4 4 0 0010 6zm0 3a2 2 0 100 4 2 2 0 000-4z"/></svg>
+        <svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="1" y="1" width="20" height="10" rx="2"/><rect x="3" y="3" width="15" height="6" fill="currentColor"/><rect x="22" y="4" width="2" height="4" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <div class="screen auth-screen">
+      <div class="auth-brand">
+        <div class="mark">
+          <svg viewBox="0 0 120 120" fill="white"><rect x="32" y="28" width="12" height="64" rx="3"/><rect x="44" y="28" width="44" height="12" rx="3"/><rect x="44" y="52" width="32" height="12" rx="3"/><circle cx="86" cy="82" r="8" fill="#AED5BB"/><circle cx="86" cy="82" r="4" fill="white"/></svg>
+        </div>
+        <h1>Welcome back</h1>
+        <p>Sign in to see your wealth</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab active">Sign in</div>
+        <div class="tab">Register</div>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input value="peter@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" value="••••••••••" />
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg" style="margin-top:8px">Sign in</button>
+
+      <div class="oauth-note">
+        Secured with ASP.NET Core Identity
+      </div>
+    </div>
+
+    <span class="phone-label">Login</span>
+  </div>
+
+  <!-- REGISTER -->
+  <div class="phone">
+    <div class="status-bar">
+      <span>9:41</span>
+      <span class="right">
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M2 6h2v8H2zM6 4h2v10H6zM10 2h2v12h-2zM14 5h2v9h-2z"/></svg>
+        <svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a7 7 0 00-6.7 5 .5.5 0 00.4.7 .5.5 0 00.5-.3A6 6 0 0110 4a6 6 0 015.8 4.4.5.5 0 00.6.3.5.5 0 00.3-.7A7 7 0 0010 3z"/></svg>
+        <svg viewBox="0 0 24 12" fill="none" stroke="currentColor" stroke-width="1"><rect x="1" y="1" width="20" height="10" rx="2"/><rect x="3" y="3" width="15" height="6" fill="currentColor"/></svg>
+      </span>
+    </div>
+
+    <div class="screen auth-screen">
+      <div class="auth-brand">
+        <div class="mark">
+          <svg viewBox="0 0 120 120" fill="white"><rect x="32" y="28" width="12" height="64" rx="3"/><rect x="44" y="28" width="44" height="12" rx="3"/><rect x="44" y="52" width="32" height="12" rx="3"/><circle cx="86" cy="82" r="8" fill="#AED5BB"/><circle cx="86" cy="82" r="4" fill="white"/></svg>
+        </div>
+        <h1>Start tracking</h1>
+        <p>Your wealth, in one calm view</p>
+      </div>
+
+      <div class="tabs">
+        <div class="tab">Sign in</div>
+        <div class="tab active">Register</div>
+      </div>
+
+      <div class="field">
+        <label>Email</label>
+        <input value="peter@example.com" />
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="Minimum 10 characters" />
+        <div class="hint">Use at least 10 characters, including a number.</div>
+      </div>
+      <div class="field">
+        <label>Confirm password</label>
+        <input type="password" />
+      </div>
+
+      <button class="btn btn-primary btn-block btn-lg" style="margin-top:8px">Create account</button>
+
+      <p class="text-tiny muted" style="text-align:center;margin-top:14px;line-height:1.5">
+        By continuing you agree to the <a style="color:var(--brand-600)">terms</a> and <a style="color:var(--brand-600)">privacy notice</a>.
+      </p>
+
+      <div class="oauth-note">
+        Social login arrives post-MVP
+      </div>
+    </div>
+
+    <span class="phone-label">Register</span>
+  </div>
+
+</div>
+
+</body>
+</html>

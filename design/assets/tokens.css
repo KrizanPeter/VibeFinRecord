@@ -1,0 +1,96 @@
+/* FinClaude Design Tokens
+ * Shared variables used across all mockups.
+ * Visual direction: Modern fintech — clean, minimal, light.
+ */
+
+:root {
+  /* ---------- Brand colors ---------- */
+  --brand-50:  #EEF6F1;
+  --brand-100: #D6EADD;
+  --brand-200: #AED5BB;
+  --brand-300: #7EBD97;
+  --brand-400: #4EA277;
+  --brand-500: #1F8A5E;  /* primary brand */
+  --brand-600: #186E4B;
+  --brand-700: #125639;
+  --brand-800: #0C3E28;
+  --brand-900: #072719;
+
+  /* ---------- Accent (data viz) ---------- */
+  --accent-blue:  #3A7BD5;
+  --accent-amber: #E9A53D;
+  --accent-coral: #E26B5C;
+  --accent-violet:#7E6BD1;
+
+  /* ---------- Neutrals ---------- */
+  --ink-900: #0F1720;
+  --ink-800: #1C2632;
+  --ink-700: #2D3A48;
+  --ink-600: #4A5765;
+  --ink-500: #6B7685;
+  --ink-400: #9099A7;
+  --ink-300: #C3C9D2;
+  --ink-200: #E1E5EB;
+  --ink-100: #EEF1F4;
+  --ink-50:  #F7F8FA;
+  --white:   #FFFFFF;
+
+  /* ---------- Semantic ---------- */
+  --success: #1F8A5E;
+  --warning: #E9A53D;
+  --danger:  #D64545;
+  --info:    #3A7BD5;
+
+  /* ---------- Surfaces ---------- */
+  --bg:        #F7F8FA;
+  --surface:   #FFFFFF;
+  --surface-2: #F1F3F6;
+
+  /* ---------- Typography ---------- */
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-display: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', 'SF Mono', Menlo, monospace;
+
+  /* Type scale (mobile-first) */
+  --fs-display: 32px;
+  --fs-h1:      26px;
+  --fs-h2:      22px;
+  --fs-h3:      18px;
+  --fs-body:    16px;
+  --fs-small:   14px;
+  --fs-tiny:    12px;
+
+  /* Line heights */
+  --lh-tight: 1.2;
+  --lh-snug:  1.35;
+  --lh-body:  1.5;
+
+  /* ---------- Spacing (4px base) ---------- */
+  --sp-1:  4px;
+  --sp-2:  8px;
+  --sp-3:  12px;
+  --sp-4:  16px;
+  --sp-5:  20px;
+  --sp-6:  24px;
+  --sp-7:  32px;
+  --sp-8:  40px;
+  --sp-9:  48px;
+  --sp-10: 64px;
+
+  /* ---------- Radii ---------- */
+  --r-sm:  6px;
+  --r-md:  10px;
+  --r-lg:  14px;
+  --r-xl:  20px;
+  --r-pill: 999px;
+
+  /* ---------- Shadows ---------- */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 32, 0.04);
+  --shadow-sm: 0 2px 6px rgba(15, 23, 32, 0.06);
+  --shadow-md: 0 6px 16px rgba(15, 23, 32, 0.08);
+  --shadow-lg: 0 12px 32px rgba(15, 23, 32, 0.10);
+
+  /* ---------- Layout ---------- */
+  --phone-w: 390px;
+  --phone-h: 844px;
+}

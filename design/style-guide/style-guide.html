@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>FinClaude — Design System</title>
+<link rel="stylesheet" href="../assets/tokens.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--ink-900);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .header {
+    background: linear-gradient(135deg, var(--brand-700), var(--brand-500));
+    color: white;
+    padding: 80px 48px 64px;
+  }
+  .header h1 {
+    font-size: 48px;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+  }
+  .header p {
+    margin-top: 12px;
+    font-size: 18px;
+    opacity: 0.85;
+    max-width: 640px;
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .wordmark .mark {
+    width: 36px;
+    height: 36px;
+    background: white;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--brand-600);
+    font-weight: 900;
+    font-size: 20px;
+  }
+
+  main { padding: 56px 48px; max-width: 1200px; margin: 0 auto; }
+
+  section { margin-bottom: 72px; }
+  section h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    letter-spacing: -0.02em;
+  }
+  section .lede { color: var(--ink-500); margin-bottom: 28px; font-size: 15px; }
+
+  /* Colors */
+  .color-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .color-grid { grid-template-columns: repeat(2, 1fr); } }
+  .swatch {
+    border-radius: var(--r-md);
+    overflow: hidden;
+    border: 1px solid var(--ink-200);
+    background: white;
+  }
+  .swatch .color {
+    height: 92px;
+  }
+  .swatch .meta {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .swatch .meta .name { font-weight: 600; }
+  .swatch .meta .hex { color: var(--ink-500); font-family: var(--font-mono); font-size: 12px; }
+
+  .accents { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .accents { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Typography */
+  .type-row {
+    display: grid;
+    grid-template-columns: 120px 1fr 120px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--ink-100);
+    align-items: baseline;
+    gap: 16px;
+  }
+  .type-row .label { color: var(--ink-500); font-size: 13px; font-family: var(--font-mono); }
+  .type-row .sample { color: var(--ink-900); }
+  .type-row .spec { color: var(--ink-500); font-size: 13px; font-family: var(--font-mono); text-align: right; }
+
+  /* Spacing */
+  .spacing-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--ink-100);
+  }
+  .spacing-row .bar {
+    height: 16px;
+    background: var(--brand-400);
+    border-radius: 3px;
+  }
+  .spacing-row .name { font-family: var(--font-mono); font-size: 13px; width: 80px; color: var(--ink-600); }
+  .spacing-row .px { font-family: var(--font-mono); font-size: 13px; color: var(--ink-500); width: 80px; }
+
+  /* Radii */
+  .radii-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .radii-grid { grid-template-columns: repeat(2, 1fr); } }
+  .radius-card {
+    background: white;
+    border: 1px solid var(--ink-200);
+    padding: 24px;
+    text-align: center;
+  }
+  .radius-card .box {
+    width: 72px;
+    height: 72px;
+    background: var(--brand-100);
+    border: 2px solid var(--brand-500);
+    margin: 0 auto 12px;
+  }
+  .radius-card .name { font-family: var(--font-mono); font-size: 13px; color: var(--ink-600); }
+
+  /* Shadows */
+  .shadows { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+  @media (max-width: 700px) { .shadows { grid-template-columns: repeat(2, 1fr); } }
+  .shadow-card {
+    background: white;
+    height: 120px;
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--ink-600);
+  }
+  .shadow-card.xs { box-shadow: var(--shadow-xs); }
+  .shadow-card.sm { box-shadow: var(--shadow-sm); }
+  .shadow-card.md { box-shadow: var(--shadow-md); }
+  .shadow-card.lg { box-shadow: var(--shadow-lg); }
+
+  /* Components */
+  .components-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 24px;
+  }
+  .comp-card {
+    background: white;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-lg);
+    padding: 24px;
+  }
+  .comp-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-600);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    margin-bottom: 16px;
+  }
+  .comp-preview { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px 22px;
+    border-radius: var(--r-md);
+    font-weight: 600;
+    font-size: 15px;
+    font-family: inherit;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary { background: var(--brand-500); color: white; }
+  .btn-secondary { background: var(--ink-100); color: var(--ink-900); }
+  .btn-ghost { background: transparent; color: var(--brand-600); }
+  .btn-danger { background: var(--danger); color: white; }
+
+  /* Inputs */
+  .input {
+    padding: 12px 16px;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-md);
+    font-family: inherit;
+    font-size: 15px;
+    width: 100%;
+    background: white;
+  }
+  .input.focused { border-color: var(--brand-500); box-shadow: 0 0 0 3px var(--brand-100); }
+  .input.error { border-color: var(--danger); }
+
+  /* Chips */
+  .chip {
+    display: inline-flex;
+    padding: 5px 12px;
+    border-radius: var(--r-pill);
+    font-size: 12px;
+    font-weight: 600;
+    background: var(--brand-50);
+    color: var(--brand-700);
+  }
+  .chip.neutral { background: var(--ink-100); color: var(--ink-700); }
+  .chip.warning { background: #FEF3E0; color: #8A5A10; }
+  .chip.danger { background: #FDE8E8; color: #8A2A2A; }
+
+  /* Progress */
+  .progress { height: 8px; background: var(--ink-100); border-radius: var(--r-pill); width: 100%; overflow: hidden; }
+  .progress .fill { height: 100%; background: linear-gradient(90deg, var(--brand-400), var(--brand-500)); }
+
+  /* Principles */
+  .principles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+  .principle {
+    background: white;
+    border-left: 4px solid var(--brand-500);
+    padding: 20px 24px;
+    border-radius: var(--r-sm);
+  }
+  .principle h4 { font-size: 16px; font-weight: 700; margin-bottom: 6px; }
+  .principle p { color: var(--ink-600); font-size: 14px; line-height: 1.55; }
+
+  footer {
+    text-align: center;
+    padding: 48px;
+    color: var(--ink-500);
+    font-size: 13px;
+    border-top: 1px solid var(--ink-200);
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="wordmark">
+    <span class="mark">F</span>
+    <span>FinClaude</span>
+  </div>
+  <h1>Design System</h1>
+  <p>Visual foundation for a modern personal-finance tracker. Clean, calm, trustworthy — designed so users can confidently see their whole wealth at a glance.</p>
+</header>
+
+<main>
+
+<section>
+  <h2>Design principles</h2>
+  <p class="lede">The rules we design by — every decision should reinforce one of these.</p>
+  <div class="principles">
+    <div class="principle">
+      <h4>Clarity over decoration</h4>
+      <p>Financial data must be legible at a glance. Generous whitespace, strong typography, no visual noise.</p>
+    </div>
+    <div class="principle">
+      <h4>Trust through restraint</h4>
+      <p>Restrained color palette and careful motion. The app should feel like a calm bank, not a trading app.</p>
+    </div>
+    <div class="principle">
+      <h4>Long-term perspective</h4>
+      <p>Design for the person planning decades, not minutes. Emphasize trends, totals and direction of travel.</p>
+    </div>
+    <div class="principle">
+      <h4>Low-friction data entry</h4>
+      <p>Snapshots are the core habit. Every tap toward completing one matters — forms are big, fast and forgiving.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Brand color</h2>
+  <p class="lede">A grounded green — signaling growth and stability without the jittery energy of pure fintech neon.</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="color" style="background:var(--brand-50)"></div><div class="meta"><div class="name">brand-50</div><div class="hex">#EEF6F1</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-100)"></div><div class="meta"><div class="name">brand-100</div><div class="hex">#D6EADD</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-200)"></div><div class="meta"><div class="name">brand-200</div><div class="hex">#AED5BB</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-300)"></div><div class="meta"><div class="name">brand-300</div><div class="hex">#7EBD97</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-400)"></div><div class="meta"><div class="name">brand-400</div><div class="hex">#4EA277</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-500)"></div><div class="meta"><div class="name">brand-500 · primary</div><div class="hex">#1F8A5E</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-600)"></div><div class="meta"><div class="name">brand-600</div><div class="hex">#186E4B</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-700)"></div><div class="meta"><div class="name">brand-700</div><div class="hex">#125639</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-800)"></div><div class="meta"><div class="name">brand-800</div><div class="hex">#0C3E28</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--brand-900)"></div><div class="meta"><div class="name">brand-900</div><div class="hex">#072719</div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Accents & semantics</h2>
+  <p class="lede">Data-viz accents for charts and goal categories; semantic tokens for status feedback.</p>
+  <div class="accents">
+    <div class="swatch"><div class="color" style="background:var(--accent-blue)"></div><div class="meta"><div class="name">accent-blue</div><div class="hex">#3A7BD5</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--accent-amber)"></div><div class="meta"><div class="name">accent-amber</div><div class="hex">#E9A53D</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--accent-coral)"></div><div class="meta"><div class="name">accent-coral</div><div class="hex">#E26B5C</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--accent-violet)"></div><div class="meta"><div class="name">accent-violet</div><div class="hex">#7E6BD1</div></div></div>
+  </div>
+  <div class="accents" style="margin-top:16px">
+    <div class="swatch"><div class="color" style="background:var(--success)"></div><div class="meta"><div class="name">success</div><div class="hex">#1F8A5E</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--warning)"></div><div class="meta"><div class="name">warning</div><div class="hex">#E9A53D</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--danger)"></div><div class="meta"><div class="name">danger</div><div class="hex">#D64545</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--info)"></div><div class="meta"><div class="name">info</div><div class="hex">#3A7BD5</div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Neutrals</h2>
+  <p class="lede">Ink scale for text, borders and surfaces. All pairs meet WCAG AA on white backgrounds.</p>
+  <div class="color-grid">
+    <div class="swatch"><div class="color" style="background:var(--ink-50);border:1px solid var(--ink-200)"></div><div class="meta"><div class="name">ink-50</div><div class="hex">#F7F8FA</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-100)"></div><div class="meta"><div class="name">ink-100</div><div class="hex">#EEF1F4</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-200)"></div><div class="meta"><div class="name">ink-200</div><div class="hex">#E1E5EB</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-300)"></div><div class="meta"><div class="name">ink-300</div><div class="hex">#C3C9D2</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-400)"></div><div class="meta"><div class="name">ink-400</div><div class="hex">#9099A7</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-500)"></div><div class="meta"><div class="name">ink-500</div><div class="hex">#6B7685</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-600)"></div><div class="meta"><div class="name">ink-600</div><div class="hex">#4A5765</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-700)"></div><div class="meta"><div class="name">ink-700</div><div class="hex">#2D3A48</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-800)"></div><div class="meta"><div class="name">ink-800</div><div class="hex">#1C2632</div></div></div>
+    <div class="swatch"><div class="color" style="background:var(--ink-900)"></div><div class="meta"><div class="name">ink-900 · body</div><div class="hex">#0F1720</div></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Typography</h2>
+  <p class="lede">Inter for UI; numerical values use tabular figures. JetBrains Mono for code &amp; data tokens.</p>
+  <div class="type-row"><span class="label">display</span><span class="sample" style="font-size:32px;font-weight:800;letter-spacing:-0.03em">€184,240.00</span><span class="spec">32 / 1.2 / 800</span></div>
+  <div class="type-row"><span class="label">h1</span><span class="sample" style="font-size:26px;font-weight:700;letter-spacing:-0.02em">Your wealth overview</span><span class="spec">26 / 1.2 / 700</span></div>
+  <div class="type-row"><span class="label">h2</span><span class="sample" style="font-size:22px;font-weight:700;letter-spacing:-0.01em">Assets (8)</span><span class="spec">22 / 1.25 / 700</span></div>
+  <div class="type-row"><span class="label">h3</span><span class="sample" style="font-size:18px;font-weight:600">Retirement nest egg</span><span class="spec">18 / 1.35 / 600</span></div>
+  <div class="type-row"><span class="label">body</span><span class="sample" style="font-size:16px;font-weight:400">Enter the current value of each asset.</span><span class="spec">16 / 1.5 / 400</span></div>
+  <div class="type-row"><span class="label">small</span><span class="sample" style="font-size:14px;color:var(--ink-500)">Updated 3 April 2026 · monthly snapshot</span><span class="spec">14 / 1.5 / 400</span></div>
+  <div class="type-row"><span class="label">tiny</span><span class="sample" style="font-size:12px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.06em">Snapshot date</span><span class="spec">12 / 1.4 / 600</span></div>
+  <div class="type-row"><span class="label">mono</span><span class="sample" style="font-family:var(--font-mono);font-size:15px">decimal(18,4)</span><span class="spec">15 / 1.4 / 500</span></div>
+</section>
+
+<section>
+  <h2>Spacing scale</h2>
+  <p class="lede">4-pixel base grid. Prefer even multiples — rhythm keeps layouts calm.</p>
+  <div class="spacing-row"><span class="name">--sp-1</span><span class="px">4px</span><div class="bar" style="width:4px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-2</span><span class="px">8px</span><div class="bar" style="width:8px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-3</span><span class="px">12px</span><div class="bar" style="width:12px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-4</span><span class="px">16px</span><div class="bar" style="width:16px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-5</span><span class="px">20px</span><div class="bar" style="width:20px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-6</span><span class="px">24px</span><div class="bar" style="width:24px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-7</span><span class="px">32px</span><div class="bar" style="width:32px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-8</span><span class="px">40px</span><div class="bar" style="width:40px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-9</span><span class="px">48px</span><div class="bar" style="width:48px"></div></div>
+  <div class="spacing-row"><span class="name">--sp-10</span><span class="px">64px</span><div class="bar" style="width:64px"></div></div>
+</section>
+
+<section>
+  <h2>Radii</h2>
+  <p class="lede">Soft but not playful — rounded enough to feel friendly, sharp enough to feel serious.</p>
+  <div class="radii-grid">
+    <div class="radius-card"><div class="box" style="border-radius:var(--r-sm)"></div><div class="name">--r-sm · 6px</div></div>
+    <div class="radius-card"><div class="box" style="border-radius:var(--r-md)"></div><div class="name">--r-md · 10px</div></div>
+    <div class="radius-card"><div class="box" style="border-radius:var(--r-lg)"></div><div class="name">--r-lg · 14px</div></div>
+    <div class="radius-card"><div class="box" style="border-radius:var(--r-xl)"></div><div class="name">--r-xl · 20px</div></div>
+    <div class="radius-card"><div class="box" style="border-radius:var(--r-pill)"></div><div class="name">--r-pill</div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Elevation</h2>
+  <p class="lede">Shadows are used sparingly — only to separate interactive surfaces and floating layers.</p>
+  <div class="shadows">
+    <div class="shadow-card xs">shadow-xs</div>
+    <div class="shadow-card sm">shadow-sm</div>
+    <div class="shadow-card md">shadow-md</div>
+    <div class="shadow-card lg">shadow-lg</div>
+  </div>
+</section>
+
+<section>
+  <h2>Core components</h2>
+  <p class="lede">A minimal set of reusable primitives composed to build every screen.</p>
+  <div class="components-grid">
+
+    <div class="comp-card">
+      <h3>Buttons</h3>
+      <div class="comp-preview">
+        <button class="btn btn-primary">Save snapshot</button>
+        <button class="btn btn-secondary">Cancel</button>
+        <button class="btn btn-ghost">Skip</button>
+        <button class="btn btn-danger">Delete asset</button>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <h3>Text input</h3>
+      <div class="comp-preview" style="flex-direction:column;align-items:stretch;gap:10px;width:100%">
+        <input class="input" placeholder="email@example.com" />
+        <input class="input focused" value="peter@example.com" />
+        <input class="input error" value="invalid" />
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <h3>Chips</h3>
+      <div class="comp-preview">
+        <span class="chip">Monthly</span>
+        <span class="chip neutral">Raiffeisen</span>
+        <span class="chip warning">Snapshot due</span>
+        <span class="chip danger">3 missing</span>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <h3>Progress bar</h3>
+      <div class="comp-preview" style="flex-direction:column;align-items:stretch;gap:14px;width:100%">
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-600);margin-bottom:6px"><span>Retirement</span><span>62%</span></div>
+          <div class="progress"><div class="fill" style="width:62%"></div></div>
+        </div>
+        <div>
+          <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-600);margin-bottom:6px"><span>Emergency fund</span><span>94%</span></div>
+          <div class="progress"><div class="fill" style="width:94%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <h3>Data card</h3>
+      <div style="background:var(--ink-50);border-radius:var(--r-lg);padding:20px;">
+        <div style="font-size:12px;color:var(--ink-500);text-transform:uppercase;letter-spacing:0.06em">Net worth</div>
+        <div style="font-size:32px;font-weight:800;letter-spacing:-0.03em;margin-top:6px">€184,240.00</div>
+        <div style="color:var(--brand-600);font-size:14px;font-weight:600;margin-top:4px">↑ 3.2% vs last snapshot</div>
+      </div>
+    </div>
+
+    <div class="comp-card">
+      <h3>List row</h3>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:14px 0;border-bottom:1px solid var(--ink-100)">
+        <div>
+          <div style="font-weight:600">VWCE ETF</div>
+          <div style="font-size:13px;color:var(--ink-500)">Degiro · broker</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-weight:600" class="mono">€42,180.00</div>
+          <div style="font-size:13px;color:var(--brand-600)">↑ 2.1%</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<section>
+  <h2>Iconography</h2>
+  <p class="lede">Use <strong>Lucide</strong> (<code>lucide-react</code>) at 22-24px stroke-1.75 for consistent monoline feel.</p>
+</section>
+
+</main>
+
+<footer>
+  FinClaude Design System v0.1 · 2026
+</footer>
+
+</body>
+</html>

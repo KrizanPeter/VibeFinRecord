@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinClaude — Design index</title>
+<link rel="stylesheet" href="assets/tokens.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--ink-900);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0C3E28 0%, #1F8A5E 55%, #4EA277 100%);
+    color: white;
+    padding: 96px 48px 80px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(255,255,255,0.08) 0%, transparent 40%),
+      radial-gradient(circle at 90% 80%, rgba(255,255,255,0.06) 0%, transparent 40%);
+  }
+  .hero > * { position: relative; }
+  .hero img { height: 90px; margin-bottom: 28px; }
+  .hero h1 {
+    font-size: 56px; font-weight: 800; letter-spacing: -0.03em;
+  }
+  .hero p {
+    font-size: 19px; opacity: 0.85; max-width: 720px; margin: 16px auto 0; line-height: 1.55;
+  }
+  .hero .chips {
+    display: flex; justify-content: center; gap: 10px; margin-top: 36px; flex-wrap: wrap;
+  }
+  .hero .chips .c {
+    background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+    padding: 7px 16px; border-radius: 999px; font-size: 13px; font-weight: 600;
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
+  main { padding: 64px 40px; max-width: 1200px; margin: 0 auto; }
+  main h2 {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ink-500);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+    margin-bottom: 56px;
+  }
+  .card {
+    background: white;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-lg);
+    padding: 24px;
+    text-decoration: none;
+    color: var(--ink-900);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    transition: all 0.15s ease;
+  }
+  .card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-2px);
+    border-color: var(--brand-300);
+  }
+  .card .ico {
+    width: 44px; height: 44px;
+    background: var(--brand-50);
+    color: var(--brand-600);
+    border-radius: var(--r-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card h3 { font-size: 17px; font-weight: 700; letter-spacing: -0.01em; }
+  .card p { font-size: 13px; color: var(--ink-500); line-height: 1.55; }
+  .card .arrow {
+    margin-top: auto;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--brand-600);
+    font-weight: 600;
+    font-size: 14px;
+  }
+
+  .summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+    margin-bottom: 56px;
+  }
+  .summary .box {
+    background: white;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-md);
+    padding: 20px;
+  }
+  .summary .box .n { font-size: 32px; font-weight: 800; letter-spacing: -0.03em; color: var(--brand-600); }
+  .summary .box .l { font-size: 13px; color: var(--ink-500); margin-top: 4px; }
+
+  footer {
+    text-align: center;
+    padding: 40px;
+    color: var(--ink-500);
+    font-size: 13px;
+    border-top: 1px solid var(--ink-200);
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img src="branding/logo-mark.svg" alt="FinClaude" />
+  <h1>FinClaude Design</h1>
+  <p>Visual direction, brand, flows and screen mockups for the personal finance tracker. Modern fintech — clean, minimal, trustworthy.</p>
+  <div class="chips">
+    <span class="c">React Native · iOS + Android</span>
+    <span class="c">390 × 844 phone frame</span>
+    <span class="c">Version 0.1</span>
+  </div>
+</header>
+
+<main>
+
+  <div class="summary">
+    <div class="box"><div class="n">1</div><div class="l">Design system</div></div>
+    <div class="box"><div class="n">4</div><div class="l">Logo variants</div></div>
+    <div class="box"><div class="n">3</div><div class="l">User flows</div></div>
+    <div class="box"><div class="n">19</div><div class="l">Screen mockups</div></div>
+  </div>
+
+  <h2>Foundations</h2>
+  <div class="grid">
+
+    <a class="card" href="style-guide/style-guide.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5"/><circle cx="17.5" cy="10.5" r=".5"/><circle cx="8.5" cy="7.5" r=".5"/><circle cx="6.5" cy="12.5" r=".5"/><path d="M12 2a10 10 0 100 20 3 3 0 003-3c0-1.5-1-2-1-3s1-2 3-2h2a6 6 0 00-7-12z"/></svg>
+      </div>
+      <h3>Design system</h3>
+      <p>Color palette, typography, spacing scale, radii, shadows, core components, design principles.</p>
+      <span class="arrow">Open style guide →</span>
+    </a>
+
+    <a class="card" href="branding/branding.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+      </div>
+      <h3>Brand &amp; logo</h3>
+      <p>Primary mark, wordmark lockups, app icon, voice &amp; tone, clear-space rules, and do-nots.</p>
+      <span class="arrow">Open branding →</span>
+    </a>
+
+    <a class="card" href="flows/user-flows.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="6" height="6" rx="1"/><rect x="15" y="3" width="6" height="6" rx="1"/><rect x="9" y="15" width="6" height="6" rx="1"/><path d="M6 9v3a3 3 0 003 3M18 9v3a3 3 0 01-3 3"/></svg>
+      </div>
+      <h3>User flows</h3>
+      <p>Auth &amp; onboarding, snapshot gap detection, and the main app CRUD loops — with decision diamonds.</p>
+      <span class="arrow">Open flows →</span>
+    </a>
+
+  </div>
+
+  <h2>Screen mockups</h2>
+  <div class="grid">
+
+    <a class="card" href="screens/dashboard.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      </div>
+      <h3>Dashboard · charts</h3>
+      <p>TASK-27 · Custom chart builder per Asset or Group — line, bar, and pie chart types.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+    <a class="card" href="screens/auth.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg>
+      </div>
+      <h3>Auth · Login &amp; Register</h3>
+      <p>TASK-20 · Entry point screens with segmented tab toggle.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+    <a class="card" href="screens/account-setup.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.4 1.9l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.9-.4 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.9.4l-.1.1A2 2 0 112.6 17l.1-.1a1.7 1.7 0 00.4-1.9 1.7 1.7 0 00-1.5-1H1.5a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.4-1.9l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.9.4h0a1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.9-.4l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.4 1.9v0a1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/></svg>
+      </div>
+      <h3>Account setup wizard</h3>
+      <p>TASK-21 · 3-step flow: currency → start date → periodicity.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+    <a class="card" href="screens/snapshots.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      </div>
+      <h3>Snapshot gate &amp; entry</h3>
+      <p>TASK-22/23 · Enforced gap-fill and the values entry form with running total.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+    <a class="card" href="screens/assets.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21V7l6-4 6 4v14"/><path d="M15 12h6v9"/></svg>
+      </div>
+      <h3>Assets · list, detail, form</h3>
+      <p>TASK-24 · Net-worth header, per-asset rows, history sparkline.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+    <a class="card" href="screens/groups.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="6" cy="6" r="3"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="18" r="3"/></svg>
+      </div>
+      <h3>Groups · list, detail, form</h3>
+      <p>TASK-25 · Aggregated tracking and membership management.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+    <a class="card" href="screens/goals.html">
+      <div class="ico">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></svg>
+      </div>
+      <h3>Goals · list, detail, form</h3>
+      <p>TASK-26 · Progress bars, circular goal ring, projection callout.</p>
+      <span class="arrow">Open →</span>
+    </a>
+
+  </div>
+
+</main>
+
+<footer>
+  FinClaude Design v0.1 · built from SPECIFICATION.md &amp; IMPLEMENTATION_PLAN.md
+</footer>
+
+</body>
+</html>

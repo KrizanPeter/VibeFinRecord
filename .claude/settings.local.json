@@ -5,7 +5,14 @@
       "Bash(git commit -m ':*)",
       "Bash(npx claude-mem:*)",
       "Bash(npx ctx7:*)",
-      "Bash(claude mcp:*)"
+      "Bash(claude mcp:*)",
+      "mcp__plugin_claude-mem_mcp-search__get_observations",
+      "Bash(dotnet new sln *)",
+      "Bash(dotnet new *)",
+      "Bash(dotnet sln add *)",
+      "Bash(dotnet add *)",
+      "Bash(dotnet build *)",
+      "Bash(dotnet ef migrations *)"
     ]
   }
 }

@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>FinClaude — Branding</title>
+<link rel="stylesheet" href="../assets/tokens.css" />
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: var(--font-sans);
+    background: var(--bg);
+    color: var(--ink-900);
+    -webkit-font-smoothing: antialiased;
+  }
+  .hero {
+    background: linear-gradient(135deg, #0C3E28 0%, #1F8A5E 100%);
+    color: white;
+    padding: 80px 48px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+    text-align: center;
+  }
+  .hero img { height: 120px; }
+  .hero h1 { font-size: 44px; font-weight: 800; letter-spacing: -0.03em; }
+  .hero p { max-width: 620px; opacity: 0.85; font-size: 17px; line-height: 1.5; }
+
+  main { padding: 64px 48px; max-width: 1100px; margin: 0 auto; }
+  section { margin-bottom: 72px; }
+  section h2 { font-size: 26px; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+  section .lede { color: var(--ink-500); margin-bottom: 28px; font-size: 15px; max-width: 680px; }
+
+  .card {
+    background: white;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-lg);
+    padding: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 160px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 800px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+  }
+
+  .card.dark   { background: var(--ink-900); }
+  .card.brand  { background: var(--brand-500); }
+  .card.brand-dark { background: var(--brand-800); }
+  .card.neutral { background: var(--ink-100); }
+  .card img { max-width: 100%; max-height: 80px; }
+  .card .label {
+    position: absolute; margin-top: 120px; font-size: 12px; color: var(--ink-500); letter-spacing: 0.06em; text-transform: uppercase;
+  }
+
+  .variant {
+    background: white;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-lg);
+    overflow: hidden;
+  }
+  .variant .preview {
+    height: 180px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .variant.on-dark .preview { background: var(--ink-900); }
+  .variant.on-brand .preview { background: var(--brand-500); }
+  .variant.on-light .preview { background: white; }
+  .variant .caption {
+    padding: 16px 20px;
+    border-top: 1px solid var(--ink-100);
+    font-size: 13px;
+    color: var(--ink-600);
+  }
+  .variant .caption .name { font-weight: 600; color: var(--ink-900); }
+
+  .icon-row {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 40px;
+    flex-wrap: wrap;
+    padding: 40px;
+    background: linear-gradient(135deg, #F7F8FA, #E1E5EB);
+    border-radius: var(--r-lg);
+  }
+  .icon-example {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--ink-500);
+  }
+
+  .clearspace {
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    background: #F7F8FA;
+    border-radius: var(--r-lg);
+  }
+  .clearspace-wrap {
+    padding: 40px;
+    border: 2px dashed var(--ink-300);
+    position: relative;
+  }
+  .clearspace-wrap::before, .clearspace-wrap::after {
+    content: '× ½F';
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-400);
+  }
+  .clearspace-wrap::before { top: 8px; left: 50%; transform: translateX(-50%); }
+  .clearspace-wrap::after  { bottom: 8px; left: 50%; transform: translateX(-50%); }
+
+  .donts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+  }
+  .dont {
+    background: white;
+    border: 1px solid var(--ink-200);
+    border-radius: var(--r-md);
+    padding: 24px;
+    text-align: center;
+    position: relative;
+  }
+  .dont::before {
+    content: '✕';
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    color: var(--danger);
+    font-weight: 700;
+  }
+  .dont .demo { height: 80px; display: flex; align-items: center; justify-content: center; }
+  .dont p { font-size: 13px; color: var(--ink-600); margin-top: 8px; }
+
+  footer { text-align:center; padding: 40px; color: var(--ink-500); font-size: 13px; border-top: 1px solid var(--ink-200); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <img src="logo-mark.svg" alt="FinClaude" />
+  <h1>FinClaude Brand</h1>
+  <p>A grounded, honest brand for people who want to see the full shape of their wealth — without trading-app noise.</p>
+</header>
+
+<main>
+
+<section>
+  <h2>Logo — primary mark</h2>
+  <p class="lede">A stylised <strong>F</strong> composed of stacked horizontal bars — shorter ones at the bottom, the longest on top — reading as both "F" and as a rising chart. The offset dot represents today's snapshot, sitting on the growth line.</p>
+  <div class="card"><img src="logo-mark.svg" alt="FinClaude mark" /></div>
+</section>
+
+<section>
+  <h2>Wordmark lockup</h2>
+  <p class="lede">Mark + wordmark paired at fixed proportions. "Fin" stays ink-900; "Claude" picks up the brand green to emphasise the app's identity.</p>
+  <div class="card"><img src="logo-wordmark.svg" alt="FinClaude wordmark" style="max-height:100px"/></div>
+</section>
+
+<section>
+  <h2>Variants</h2>
+  <p class="lede">Three approved lockups cover every surface the app will live on.</p>
+  <div class="grid-3">
+    <div class="variant on-light">
+      <div class="preview"><img src="logo-wordmark.svg" style="max-height:80px"/></div>
+      <div class="caption"><div class="name">On light</div>Primary usage</div>
+    </div>
+    <div class="variant on-dark">
+      <div class="preview"><img src="logo-wordmark-mono-light.svg" style="max-height:80px"/></div>
+      <div class="caption"><div class="name">On dark</div>For dark-mode UI &amp; splash screens</div>
+    </div>
+    <div class="variant on-brand">
+      <div class="preview"><img src="logo-wordmark-mono-light.svg" style="max-height:80px"/></div>
+      <div class="caption"><div class="name">On brand</div>Marketing surfaces, launch screens</div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>App icon</h2>
+  <p class="lede">Elevated icon treatment for the home-screen tile — adds a subtle chart trend behind the mark to emphasise the wealth-tracking promise.</p>
+  <div class="icon-row">
+    <div class="icon-example">
+      <img src="app-icon.svg" width="180" height="180" style="border-radius:40px;box-shadow:0 10px 30px rgba(15,23,32,0.2)" />
+      <span>180 · home-screen</span>
+    </div>
+    <div class="icon-example">
+      <img src="app-icon.svg" width="120" height="120" style="border-radius:27px;box-shadow:0 6px 20px rgba(15,23,32,0.15)" />
+      <span>120 · settings</span>
+    </div>
+    <div class="icon-example">
+      <img src="app-icon.svg" width="64" height="64" style="border-radius:14px" />
+      <span>64 · notification</span>
+    </div>
+    <div class="icon-example">
+      <img src="app-icon.svg" width="40" height="40" style="border-radius:9px" />
+      <span>40 · list</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Clear space</h2>
+  <p class="lede">Always reserve clear space around the mark equal to half the height of the "F". Nothing should intrude.</p>
+  <div class="clearspace">
+    <div class="clearspace-wrap"><img src="logo-mark.svg" width="120"/></div>
+  </div>
+</section>
+
+<section>
+  <h2>Voice &amp; tone</h2>
+  <p class="lede">The brand's verbal identity complements the visual one.</p>
+  <div class="grid-2">
+    <div class="card" style="flex-direction:column; align-items:flex-start; text-align:left; padding:32px;">
+      <div style="font-size:12px;color:var(--brand-600);font-weight:700;letter-spacing:0.08em;text-transform:uppercase">We are</div>
+      <ul style="margin-top:12px;padding-left:20px;color:var(--ink-700);line-height:1.8">
+        <li>Calm &amp; precise</li>
+        <li>Long-term focused</li>
+        <li>Clear about tradeoffs</li>
+        <li>Honest about uncertainty</li>
+      </ul>
+    </div>
+    <div class="card" style="flex-direction:column;align-items:flex-start;text-align:left; padding:32px;">
+      <div style="font-size:12px;color:var(--danger);font-weight:700;letter-spacing:0.08em;text-transform:uppercase">We are not</div>
+      <ul style="margin-top:12px;padding-left:20px;color:var(--ink-700);line-height:1.8">
+        <li>Hypey or gamified</li>
+        <li>Loud with emoji</li>
+        <li>Trading/crypto bro</li>
+        <li>Paternalistic</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Don'ts</h2>
+  <p class="lede">A few rules that keep the brand recognizable.</p>
+  <div class="donts">
+    <div class="dont">
+      <div class="demo"><img src="logo-mark.svg" width="80" style="filter:hue-rotate(180deg)"/></div>
+      <p>Don't recolor the mark outside the brand palette.</p>
+    </div>
+    <div class="dont">
+      <div class="demo"><img src="logo-mark.svg" width="80" style="transform:skewX(-15deg)"/></div>
+      <p>Don't skew, rotate, or distort the mark.</p>
+    </div>
+    <div class="dont">
+      <div class="demo" style="background:#E9A53D"><img src="logo-mark.svg" width="80"/></div>
+      <p>Don't place the mark on a low-contrast colored background.</p>
+    </div>
+    <div class="dont">
+      <div class="demo"><img src="logo-mark.svg" width="80" style="opacity:0.3"/></div>
+      <p>Don't drop the mark below 60% opacity.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>FinClaude Brand Guidelines v0.1 · 2026</footer>
+
+</body>
+</html>
