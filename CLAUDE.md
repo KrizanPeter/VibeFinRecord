@@ -90,11 +90,18 @@ Invoke these from Claude Code when the task matches.
 
 | Agent | When to use |
 |---|---|
+| `analytic-consultant` | Adding a new feature not in SPECIFICATION.md — runs the /feature discovery interview, then updates the spec and plan |
 | `spec-guardian` | New architectural decision made, or an existing spec rule needs to change |
 | `plan-reviewer` | Start of a session — find out what's ready to work on next |
-| `feature-scaffold` | Starting a backend vertical slice — generates command/query/context/steps/handler/controller stubs |
+| `slice-scaffold` | Starting a backend vertical slice — generates command/query/context/steps/handler/controller stubs |
 | `design-consultant` | Implementing a mobile screen — translates design tokens + mockups to React Native guidance; also audits existing code for design deviations |
 | `code-reviewer` | After completing a task — audits code against §11 backend rules and mobile patterns |
+
+### Slash commands
+
+| Command | What it does |
+|---|---|
+| `/feature` | Start the feature discovery interview — asks business + technical questions, then spawns `analytic-consultant` to update SPECIFICATION.md and IMPLEMENTATION_PLAN.md |
 
 ---
 

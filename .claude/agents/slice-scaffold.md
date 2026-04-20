@@ -1,5 +1,5 @@
 ---
-name: feature-scaffold
+name: slice-scaffold
 description: Scaffolds a full backend vertical slice for a given task from IMPLEMENTATION_PLAN.md. Generates command/query, context object, steps, chain provider, handler, controller endpoint, and stub unit tests — all aligned with SPECIFICATION.md rules.
 ---
 
