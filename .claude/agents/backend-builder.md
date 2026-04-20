@@ -11,7 +11,7 @@ You are a code scaffolding agent for the FinClaude backend. Given a task ID (e.g
 2. Read `.claude/skills/domain/SKILL.md` — entity rules, soft-delete, ownership.
 3. If the task involves snapshots, also read `.claude/skills/snapshot/SKILL.md`.
 4. Find the task file in `ImplementationPlan/tasks/` (e.g. `P2-TASK-13.md`). Confirm it exists and is not already marked Done. Check `ImplementationPlan/progress.md` if unsure of the exact filename.
-5. Read the relevant domain entity files in `src/FinClaude.Domain/Entities/` for the feature you are scaffolding.
+5. Read **only** the entity files listed in the task's `Entities:` field from `src/FinClaude.Domain/Entities/`. Do not explore further.
 
 ## What to generate
 
@@ -19,33 +19,32 @@ For every command/query in the task, produce:
 
 ### 1. Command or Query record
 ```
-FinClaude.Application/{Feature}/Commands/XxxCommand.cs
-FinClaude.Application/{Feature}/Queries/XxxQuery.cs
+FinClaude.Application/Features/{Feature}/Commands/{Op}/XxxCommand.cs
+FinClaude.Application/Features/{Feature}/Queries/{Op}/XxxQuery.cs
 ```
 - Implements `ICommand<TResult>` or `IQuery<TResult>`
 - Immutable record with all required input fields
 
 ### 2. Context object
 ```
-FinClaude.Application/{Feature}/Commands/XxxContext.cs
+FinClaude.Application/Features/{Feature}/Commands/{Op}/XxxContext.cs
 ```
 - Mutable class holding the command/query + accumulated output (e.g. created entity Id)
 
 ### 3. Steps (one file per step)
 ```
-FinClaude.Application/{Feature}/Steps/ValidateXxxStep.cs
-FinClaude.Application/{Feature}/Steps/AuthorizeXxxStep.cs
-FinClaude.Application/{Feature}/Steps/XxxDomainStep.cs
-FinClaude.Application/{Feature}/Steps/PersistXxxStep.cs
+FinClaude.Infrastructure/Features/{Feature}/Commands/Steps/ValidateXxxStep.cs
+FinClaude.Infrastructure/Features/{Feature}/Commands/Steps/AuthorizeXxxStep.cs
+FinClaude.Infrastructure/Features/{Feature}/Commands/Steps/PersistXxxStep.cs
 ```
 - Each extends `BaseStep<XxxContext>`
 - Each calls `NextAsync(context, ct)` to continue the chain
 - Returns `Error.Validation`, `Error.NotFound`, `Error.Conflict` as appropriate
-- Never calls `SaveChangesAsync` — only repository methods
+- Never calls `SaveChangesAsync` — only EF Core DbContext methods
 
 ### 4. Chain Provider
 ```
-FinClaude.Application/{Feature}/Commands/XxxChainProvider.cs
+FinClaude.Infrastructure/Features/{Feature}/Commands/XxxChainProvider.cs
 ```
 - Implements `IChainProvider<XxxContext>`
 - Steps injected via constructor
@@ -53,7 +52,7 @@ FinClaude.Application/{Feature}/Commands/XxxChainProvider.cs
 
 ### 5. Handler
 ```
-FinClaude.Application/{Feature}/Commands/XxxCommandHandler.cs
+FinClaude.Application/Features/{Feature}/Commands/{Op}/XxxCommandHandler.cs
 ```
 - Implements `ICommandHandler<XxxCommand, TResult>` or `ICommandHandler<XxxCommand>`
 - Injects `IUnitOfWork` and `IChainProvider<XxxContext>`

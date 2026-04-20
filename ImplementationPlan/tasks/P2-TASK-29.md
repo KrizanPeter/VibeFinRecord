@@ -29,6 +29,10 @@ Steps for POST/PUT: Validate → Authorize → Domain logic → Persist
 
 TASK-03, TASK-06, TASK-07, TASK-10, TASK-11, TASK-13
 
+## Entities
+
+`DashboardChart`, `Asset`, `AssetGroup`, `AssetGroupMembership`, `AssetSnapshot`, `Snapshot`
+
 ## Status
 
 Waiting
