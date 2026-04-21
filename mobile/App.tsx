@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { NavigationContainer } from '@react-navigation/native';
 import { StatusBar } from 'expo-status-bar';
-import { Text, View } from 'react-native';
+import RootNavigator from './src/navigation';
 
 const queryClient = new QueryClient();
 
@@ -9,10 +9,8 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <NavigationContainer>
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-          <Text>FinClaude</Text>
-          <StatusBar style="auto" />
-        </View>
+        <RootNavigator />
+        <StatusBar style="auto" />
       </NavigationContainer>
     </QueryClientProvider>
   );
