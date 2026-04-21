@@ -3,11 +3,6 @@ name: design
 description: Design system rules for implementing FinClaude mobile screens in React Native. Covers tokens, typography, components, and screen-specific mockup references. Load this skill whenever implementing or auditing any mobile screen.
 ---
 
-## Source files
-- Tokens: `design/assets/tokens.css` — single source of truth for all values
-- Components & principles: `design/style-guide/style-guide.html`
-- Per-screen mockups: `design/screens/<screen>.html`
-
 ## Screen → mockup mapping
 | Task | Mockup file |
 |------|------------|

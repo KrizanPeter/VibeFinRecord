@@ -1,6 +1,6 @@
 # FinClaude — Implementation Progress
 
-**14 / 31 tasks completed**
+**17 / 31 tasks completed**
 
 | Task | Title | Status |
 |------|-------|--------|
@@ -19,9 +19,9 @@
 | P2-TASK-13 | Snapshots Feature (Submit + List + Get) | Done |
 | P2-TASK-14 | Goals Feature (CRUD) | Done |
 | P2-TASK-29 | DashboardChart Feature (CRUD + Data) | Waiting |
-| P3-TASK-16 | React Native Project Setup | Waiting |
-| P3-TASK-17 | Axios Client + JWT Interceptor | Waiting |
-| P3-TASK-18 | Zustand Stores | Waiting |
+| P3-TASK-16 | React Native Project Setup | Done |
+| P3-TASK-17 | Axios Client + JWT Interceptor | Done |
+| P3-TASK-18 | Zustand Stores | Done |
 | P3-TASK-19 | Navigation Structure | Waiting |
 | P4-TASK-20 | Auth Screens (Login + Register) | Waiting |
 | P4-TASK-21 | Account Setup Screen | Waiting |

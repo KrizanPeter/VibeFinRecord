@@ -18,7 +18,12 @@
       "Bash(grep -E \"\\\\.\\(cs\\)$\")",
       "mcp__plugin_claude-mem_mcp-search__smart_outline",
       "Bash(grep -E \"\\\\.cs$\")",
-      "Bash(xargs grep *)"
+      "Bash(xargs grep *)",
+      "Bash(graphify claude *)",
+      "Bash(npx create-expo-app *)",
+      "Bash(npx expo *)",
+      "Bash(npx tsc *)",
+      "Bash(xargs cat *)"
     ]
   }
 }
