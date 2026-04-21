@@ -16,7 +16,9 @@
       "Bash(git rm *)",
       "Bash(git commit -m ' *)",
       "Bash(grep -E \"\\\\.\\(cs\\)$\")",
-      "mcp__plugin_claude-mem_mcp-search__smart_outline"
+      "mcp__plugin_claude-mem_mcp-search__smart_outline",
+      "Bash(grep -E \"\\\\.cs$\")",
+      "Bash(xargs grep *)"
     ]
   }
 }

@@ -60,6 +60,16 @@ using FinClaude.Infrastructure.Features.Goals.Commands.Steps;
 using FinClaude.Infrastructure.Features.Goals.Queries;
 using FinClaude.Infrastructure.Features.Auth.Register;
 using FinClaude.Infrastructure.Features.Auth.Register.Steps;
+using FinClaude.Application.Features.Dashboards.Commands.CreateDashboardChart;
+using FinClaude.Application.Features.Dashboards.Commands.UpdateDashboardChart;
+using FinClaude.Application.Features.Dashboards.Commands.DeleteDashboardChart;
+using FinClaude.Application.Features.Dashboards.DTOs;
+using FinClaude.Application.Features.Dashboards.Queries.ListDashboardCharts;
+using FinClaude.Application.Features.Dashboards.Queries.GetDashboardChart;
+using FinClaude.Application.Features.Dashboards.Queries.GetChartData;
+using FinClaude.Infrastructure.Features.Dashboards.Commands;
+using FinClaude.Infrastructure.Features.Dashboards.Commands.Steps;
+using FinClaude.Infrastructure.Features.Dashboards.Queries;
 using FinClaude.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -201,6 +211,25 @@ public static class DependencyInjection
         services.AddTransient<AuthorizeAndDeleteGoalStep>();
         services.AddTransient<IChainProvider<DeleteGoalContext>, DeleteGoalChainProvider>();
         services.AddTransient<ICommandHandler<DeleteGoalCommand>, DeleteGoalCommandHandler>();
+
+        // Dashboards
+        services.AddTransient<IQueryHandler<ListDashboardChartsQuery, List<DashboardChartResponse>>, ListDashboardChartsQueryHandler>();
+        services.AddTransient<IQueryHandler<GetDashboardChartQuery, DashboardChartResponse>, GetDashboardChartQueryHandler>();
+        services.AddTransient<IQueryHandler<GetChartDataQuery, ChartDataResponse>, GetChartDataQueryHandler>();
+        services.AddTransient<ValidateCreateDashboardChartStep>();
+        services.AddTransient<AuthorizeLinkedEntityForCreateChartStep>();
+        services.AddTransient<PersistCreateDashboardChartStep>();
+        services.AddTransient<IChainProvider<CreateDashboardChartContext>, CreateDashboardChartChainProvider>();
+        services.AddTransient<ICommandHandler<CreateDashboardChartCommand, DashboardChartResponse>, CreateDashboardChartCommandHandler>();
+        services.AddTransient<AuthorizeAndLoadDashboardChartStep>();
+        services.AddTransient<ValidateUpdateDashboardChartStep>();
+        services.AddTransient<AuthorizeLinkedEntityForUpdateChartStep>();
+        services.AddTransient<PersistUpdateDashboardChartStep>();
+        services.AddTransient<IChainProvider<UpdateDashboardChartContext>, UpdateDashboardChartChainProvider>();
+        services.AddTransient<ICommandHandler<UpdateDashboardChartCommand, DashboardChartResponse>, UpdateDashboardChartCommandHandler>();
+        services.AddTransient<AuthorizeAndDeleteDashboardChartStep>();
+        services.AddTransient<IChainProvider<DeleteDashboardChartContext>, DeleteDashboardChartChainProvider>();
+        services.AddTransient<ICommandHandler<DeleteDashboardChartCommand>, DeleteDashboardChartCommandHandler>();
 
         return services;
     }
