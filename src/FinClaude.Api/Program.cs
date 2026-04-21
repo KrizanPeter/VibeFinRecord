@@ -1,5 +1,6 @@
 using FinClaude.Api.Common.Middleware;
 using FinClaude.Infrastructure;
+using Scalar.AspNetCore;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -21,6 +22,12 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    app.MapScalarApiReference();
+    app.Lifetime.ApplicationStarted.Register(() =>
+    {
+        var url = "https://localhost:7089/scalar/v1";
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo(url) { UseShellExecute = true });
+    });
 }
 
 app.UseSerilogRequestLogging();
